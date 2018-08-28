@@ -53,10 +53,12 @@ public class LevelAnimController : MonoBehaviour {
 		currentLevel = 0;
 		anim.SetBool ("show", true);
 		levelAnim[currentLevel].SetTrigger ("instantShow");
+		levelAnim[currentLevel].SetBool ("show", true);
 	}
 
 	public void HideLevelSelect () {
 		anim.SetBool ("show", false);
 		levelAnim[currentLevel].SetTrigger ("instantHide");
+		levelAnim[currentLevel].SetBool ("show", false);
 	}
 }

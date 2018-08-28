@@ -30,151 +30,163 @@ public class MainMenuController : MonoBehaviour {
 		inputCooldown = 0.0f;
 	}
 
+	private bool backFromOptions = false;
+
+	public void BackFromOptions () {
+		backFromOptions = true;
+	}
+
 	private void Update () {
-		float y = Input.GetAxis ("Verr") + Input.GetAxis ("Vertical");
+		if (menuSelect != 6) {
 
-		//select
-		if (Input.GetButtonDown ("Jump") || Input.GetKeyDown(KeyCode.RightShift)) {
-			switch (menuSelect) {
-				case 0: {
-						//start
-						menuSelect = 4;
-					}
-					break;
-				case 1: {
-						//options
-						StartCoroutine (LoadingManager.Instance.LoadPuzzle (1));
-						print ("load stage 2");
-					}
-					break;
-				case 2: {
-						//credits
-						StartCoroutine (LoadingManager.Instance.LoadPuzzle (2));
-					}
-					break;
-				case 3: {
-						//exit
-						Application.Quit ();
-					}
-					break;
-				case 4: {
-						//puzzle
-						menuSelect = 8;
-						levelAnimController.ShowLevelSelect ();
-					}
-					break;
-				case 5: {
-						//sandbox
-						StartCoroutine (LoadingManager.Instance.LoadPuzzle (LevelParameters.SandboxDefaultLevel));
-					}
-					break;
-				case 6: {
-						//options
-					}
-					break;
-				case 7: {
-						//credits
-					}
-					break;
-				case 8: {
-						//select level
-						int level = levelAnimController.GetCurrentLevel ();
-						StartCoroutine (LoadingManager.Instance.LoadPuzzle (level));
-					}
-					break;
-			}
-		}
+			float y = Input.GetAxis ("Verr") + Input.GetAxis ("Vertical");
 
-		//back
-		if (Input.GetButtonDown("Jump2") || Input.GetKeyDown(KeyCode.LeftShift)) {
-			switch (menuSelect) {
-				case 0:
-				case 1:
-				case 2: {
-						menuSelect = 3;
-					}
-					break;
-				case 4:
-				case 5: {
-						menuSelect = 0;
-					}
-					break;
-				case 6: {
-						menuSelect = 1;
-					}
-					break;
-				case 7: {
-						menuSelect = 2;
-					}
-					break;
-				case 8: {
-						levelAnimController.HideLevelSelect ();
-						menuSelect = 4;
-					}
-					break;
-			}
-		}
-
-		//joystick
-		if (inputCooldown <= 0.0f) {
-			if (y > 0.1f) { //atas
+			//select
+			if (Input.GetButtonDown ("Jump") || Input.GetKeyDown (KeyCode.RightShift)) {
 				switch (menuSelect) {
 					case 0: {
-							menuSelect = 3;
-						} break;
-					case 1:
-					case 2: 
-					case 3: {
-							menuSelect--;
-						} break;
-					case 4: {
-							menuSelect = 5;
-						} break;
-					case 5: {
+							//start
 							menuSelect = 4;
-						} break;
-					default: break;
+						}
+						break;
+					case 1: {
+							//options
+							OptionsManager.Instance.ShowOptions (this);
+							menuSelect = 6;
+						}
+						break;
+					case 2: {
+							//credits
+						}
+						break;
+					case 3: {
+							//exit
+							Application.Quit ();
+						}
+						break;
+					case 4: {
+							//puzzle
+							menuSelect = 8;
+							levelAnimController.ShowLevelSelect ();
+						}
+						break;
+					case 5: {
+							//sandbox
+							StartCoroutine (LoadingManager.Instance.LoadPuzzle (LevelParameters.SandboxDefaultLevel));
+						}
+						break;
+					case 7: {
+							//credits
+						}
+						break;
+					case 8: {
+							//select level
+							int level = levelAnimController.GetCurrentLevel ();
+							StartCoroutine (LoadingManager.Instance.LoadPuzzle (level));
+						}
+						break;
 				}
-				inputCooldown = maxInputCooldown;
-			} else if (y < -0.1f) { //bawah
+			}
+
+			//back
+			if (Input.GetButtonDown ("Jump2") || Input.GetKeyDown (KeyCode.LeftShift)) {
 				switch (menuSelect) {
 					case 0:
 					case 1:
 					case 2: {
-							menuSelect++;
-						} break;
-					case 3: {
+							menuSelect = 3;
+						}
+						break;
+					case 4:
+					case 5: {
 							menuSelect = 0;
 						}
 						break;
-					case 4: {
-							menuSelect = 5;
+					case 7: {
+							menuSelect = 2;
 						}
 						break;
-					case 5: {
+					case 8: {
+							levelAnimController.HideLevelSelect ();
 							menuSelect = 4;
 						}
 						break;
-					default: break;
 				}
-				inputCooldown = maxInputCooldown;
 			}
 
-			if (menuSelect == 8) {
-				float x = Input.GetAxis ("Horr") + Input.GetAxis ("Horizontal");
-				if (x > 0.1f) { //kanan
-					levelAnimController.ChangeCurrentLevel (true);
+			//joystick
+			if (inputCooldown <= 0.0f) {
+				if (y > 0.1f) { //atas
+					switch (menuSelect) {
+						case 0: {
+								menuSelect = 3;
+							}
+							break;
+						case 1:
+						case 2:
+						case 3: {
+								menuSelect--;
+							}
+							break;
+						case 4: {
+								menuSelect = 5;
+							}
+							break;
+						case 5: {
+								menuSelect = 4;
+							}
+							break;
+						default: break;
+					}
 					inputCooldown = maxInputCooldown;
-				} else if (x < -0.1f) { //kiri
-					levelAnimController.ChangeCurrentLevel (false);
+				} else if (y < -0.1f) { //bawah
+					switch (menuSelect) {
+						case 0:
+						case 1:
+						case 2: {
+								menuSelect++;
+							}
+							break;
+						case 3: {
+								menuSelect = 0;
+							}
+							break;
+						case 4: {
+								menuSelect = 5;
+							}
+							break;
+						case 5: {
+								menuSelect = 4;
+							}
+							break;
+						default: break;
+					}
 					inputCooldown = maxInputCooldown;
 				}
+
+				if (menuSelect == 8) {
+					float x = Input.GetAxis ("Horr") + Input.GetAxis ("Horizontal");
+					if (x > 0.1f) { //kanan
+						levelAnimController.ChangeCurrentLevel (true);
+						inputCooldown = maxInputCooldown;
+					} else if (x < -0.1f) { //kiri
+						levelAnimController.ChangeCurrentLevel (false);
+						inputCooldown = maxInputCooldown;
+					}
+				}
+				//kiri
+			} else {
+				inputCooldown -= Time.deltaTime;
+				if (inputCooldown < 0.0f)
+					inputCooldown = 0.0f;
 			}
-			//kiri
-		} else {
-			inputCooldown -= Time.deltaTime;
-			if (inputCooldown < 0.0f)
-				inputCooldown = 0.0f;
+		}
+
+		if (backFromOptions) {
+			if (menuSelect == 6) {
+				menuSelect = 1;
+			}
+			backFromOptions = false;
 		}
 
 		mainMenuAnim.SetInteger ("menu", menuSelect);
