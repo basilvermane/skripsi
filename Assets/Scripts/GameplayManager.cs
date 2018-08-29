@@ -87,6 +87,8 @@ public class GameplayManager : MonoBehaviour {
 
 	private Vector3 ballToGoalDist;
 
+	private CameraController player;
+
 	//public float
 
 	public void SandboxChange (float grav, int mapLength, int mapWidth, int mapHeight) {
@@ -124,7 +126,6 @@ public class GameplayManager : MonoBehaviour {
 		stageGoal.position = goalPos;
 
 		//tempatkan player
-		CameraController player = GameObject.Find ("Player").GetComponent<CameraController> ();
 		Vector3 playerPos = stageBall.transform.position - player.getForward ();
 		playerPos.y = perlin.GetCurrentHeightAt (playerPos.x, playerPos.z) + 10.0f;
 		player.Teleport (playerPos);
@@ -147,11 +148,12 @@ public class GameplayManager : MonoBehaviour {
 		//jika level negatif maka sandbox mode
 		if (level < 0) {
 			isSandbox = true;
+			print ("sandbox mode");
 			level = LevelParameters.SandboxDefaultLevel;
 		} else {
 			isSandbox = false;
+			print ("level " + level);
 		}
-		print ("something");
 
 		//ambil data per level
 		currentLevel = LevelParameters.LevelParams[level];
@@ -159,6 +161,9 @@ public class GameplayManager : MonoBehaviour {
 		//generate terrain
 		perlin = GameObject.FindGameObjectWithTag ("Terrain").GetComponent<PerlinNoise> ();
 		perlin.GenerateNewNoise (currentLevel.HeightMapWidth, currentLevel.HeightMapHeight, currentLevel.MaxHeight);
+
+		//cari player
+		player = GameObject.Find ("Player").GetComponent<CameraController> ();
 
 		shotCount = 0;
 		timeFreeze = false;
@@ -179,19 +184,19 @@ public class GameplayManager : MonoBehaviour {
 		float ballY = perlin.GetCurrentHeightAt (ballPosTemp.x, ballPosTemp.y);
 		print ("ball height " + ballY);
 		float goalY = perlin.GetCurrentHeightAt (goalPosTemp.x, goalPosTemp.y);
-		ballY += 10.0f;
-		goalY += 10.0f;
+		ballY += 5.0f;
+		goalY += 5.0f;
 
 		//cek apakah bola / gol dibawah terrain
 		while (!Physics.Raycast (
 			new Vector3 (ballPosTemp.x, ballY, ballPosTemp.y), Vector3.down)) {
 			//terrain belum di bawah bola
-			ballY += 5.0f;
+			ballY += 2.0f;
 		}
 		while (!Physics.Raycast (
 			new Vector3 (goalPosTemp.x, goalY, goalPosTemp.y), Vector3.down)) {
 			//terrain belum di bawah bola
-			goalY += 5.0f;
+			goalY += 2.0f;
 		}
 
 		ballPos = new Vector3 (ballPosTemp.x, ballY, ballPosTemp.y);
@@ -209,6 +214,10 @@ public class GameplayManager : MonoBehaviour {
 	}
 
 	private void Update () {
+		if (LoadingManager.Instance.IsLoading) {
+			return;
+		}
+
 		//testing
 		/*if (Input.GetKeyDown(KeyCode.U)) {
 			StartCoroutine (LoadingManager.Instance.LoadPuzzle (0));
@@ -220,6 +229,7 @@ public class GameplayManager : MonoBehaviour {
 		//input
 		if ((Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.X)) && isSandbox && shootMode == ShootMode.IDLE) {
 			perlin.HideTerrain ();
+			SandBoxCanvasController.instance.SetPlayer (player.transform);
 			SandBoxCanvasController.instance.ShowCanvas ();
 		}
 

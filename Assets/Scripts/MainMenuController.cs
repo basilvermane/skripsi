@@ -37,6 +37,10 @@ public class MainMenuController : MonoBehaviour {
 	}
 
 	private void Update () {
+		if (LoadingManager.Instance.IsLoading) {
+			return;
+		}
+
 		if (menuSelect != 6) {
 
 			float y = Input.GetAxis ("Verr") + Input.GetAxis ("Vertical");
@@ -72,7 +76,7 @@ public class MainMenuController : MonoBehaviour {
 						break;
 					case 5: {
 							//sandbox
-							StartCoroutine (LoadingManager.Instance.LoadPuzzle (LevelParameters.SandboxDefaultLevel));
+							StartCoroutine (LoadingManager.Instance.LoadPuzzle (-1));
 						}
 						break;
 					case 7: {

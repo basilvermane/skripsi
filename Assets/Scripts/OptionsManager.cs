@@ -55,6 +55,10 @@ public class OptionsManager : MonoBehaviour {
 	}
 
 	private void Update () {
+		if (LoadingManager.Instance.IsLoading) {
+			return;
+		}
+
 		if (inOptions) {
 			//ambil input
 			float y = Input.GetAxis ("Verr") + Input.GetAxis ("Vertical");

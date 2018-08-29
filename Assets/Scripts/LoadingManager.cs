@@ -69,7 +69,7 @@ public class LoadingManager : MonoBehaviour {
 		yield return null;
 	}
 
-	private void Update () {
+	private void LateUpdate () {
 		if (IsLoading &&
 			(Input.GetButtonDown ("ShootMode") || Input.GetButtonDown ("TimeFreeze") ||
 			Input.GetButtonDown ("PhysicsVision") || Input.GetButtonDown ("Cancel") ||

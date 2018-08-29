@@ -28,6 +28,8 @@ public class SandBoxCanvasController : MonoBehaviour {
 
 	private bool inSubMenu;
 
+	private Transform player;
+
 	//-1 = not shown, 0 = gravity, 1 = map length, 2 = map width, 3 = max height
 	//4 = move goal, 5 = move ball, 6 = ok, 7 = cancel
 
@@ -39,8 +41,15 @@ public class SandBoxCanvasController : MonoBehaviour {
 		inSubMenu = false;
 	}
 
-	// Update is called once per frame
+	public void SetPlayer (Transform p) {
+		player = p;
+	}
+	
 	private void Update () {
+		if (LoadingManager.Instance.IsLoading) {
+			return;
+		}
+
 		if (menu < 0) {
 			return;
 		}
@@ -127,14 +136,28 @@ public class SandBoxCanvasController : MonoBehaviour {
 	public void HideCanvas () {
 		if (menu >= 0) {
 			anim.SetBool ("show", false);
+			menu = -1;
 		}
 	}
 
 	public void ShowCanvas () {
 		if (menu < 0) {
 			menu = 0;
+			PlaceCanvas ();
 			anim.SetBool ("show", true);
 			anim.SetInteger ("menu", menu);
 		}
+	}
+
+	private void PlaceCanvas () {
+		//kalkulasi target di world position
+		Vector3 playerFwdTemp = player.forward;
+		float yRot = player.eulerAngles.y;
+		Vector3 playerFwd = Quaternion.AngleAxis (yRot, Vector3.up) * Vector3.forward;
+		Vector3 pos = player.position + playerFwd;
+
+		//letakkan canvas
+		transform.position = pos;
+		transform.LookAt (player);
 	}
 }
