@@ -19,26 +19,53 @@ public class SandBoxCanvasController : MonoBehaviour {
 	private Animator anim;
 
 	private int menu;
+	/* -1 = not shown
+	 * 0 = gravity
+	 * 1 = map length
+	 * 2 = map width
+	 * 3 = max height
+	 * 4 = apply
+	 * 5 = back
+	 * 6 = inside gravity
+	 * 7 = inside map length
+	 * 8 = inside map width
+	 * 9 = inside max height
+	 */
 
 	public Slider[] sandboxSliders;
 
-	public float maxAxisDelay = 1.0f;
-	private float axisDelay;
+	public float maxInputCooldown = 0.5f;
+	private float inputCooldown;
 	public float sliderPercentage = 0.5f;
 
-	private bool inSubMenu;
+	public Slider gravSlider, widthSlider, lengthSlider, heightSlider;
+
+	private float gravMin, gravMax;
+	private int widthMin, widthMax;
+	private int lengthMin, lengthMax;
+	private int heightMin, heightMax;
+
+	public float scrollSpeedF = 1f;
+	private int scrollSpeedI;
 
 	private Transform player;
-
-	//-1 = not shown, 0 = gravity, 1 = map length, 2 = map width, 3 = max height
-	//4 = move goal, 5 = move ball, 6 = ok, 7 = cancel
 
 	// Use this for initialization
 	private void Start () {
 		anim = GetComponent<Animator> ();
 		menu = -1;
-		axisDelay = 0.0f;
-		inSubMenu = false;
+		inputCooldown = 0.0f;
+
+		gravMin = gravSlider.minValue;
+		gravMax = gravSlider.maxValue;
+		widthMin = (int) widthSlider.minValue;
+		widthMax = (int) widthSlider.maxValue;
+		heightMin = (int) heightSlider.minValue;
+		heightMax = (int) heightSlider.maxValue;
+		lengthMin = (int) lengthSlider.minValue;
+		lengthMax = (int) lengthSlider.maxValue;
+
+		scrollSpeedI = (int) scrollSpeedF;
 	}
 
 	public void SetPlayer (Transform p) {
@@ -54,69 +81,154 @@ public class SandBoxCanvasController : MonoBehaviour {
 			return;
 		}
 
-		if (axisDelay > 0.0f) {
-			axisDelay -= Time.deltaTime;
-			if (axisDelay < 0.0f) {
-				axisDelay = 0.0f;
+		if (inputCooldown > 0.0f) {
+			inputCooldown -= Time.deltaTime;
+			if (inputCooldown < 0.0f) {
+				inputCooldown = 0.0f;
 			}
-		}
+		} else {
 
-		float mouseX, mouseY;
-		//DEBUG-UNCOMMENT
-		//mouseX = Input.GetAxis ("Horr");
-		//mouseY = Input.GetAxis ("Verr");
-		//DEBUG-COMMENT
-		mouseX = Input.GetAxis ("Horizontal");
-		mouseY = Input.GetAxis ("Vertical");
+			float mouseX, mouseY;
+			mouseX = Input.GetAxis ("Horizontal") + Input.GetAxis ("Horr");
+			mouseY = Input.GetAxis ("Vertical") + Input.GetAxis ("Verr");
 
-		if (Mathf.Abs (mouseY) >= 0.1f && axisDelay <= 0.0f && !inSubMenu) {
-			axisDelay = maxAxisDelay;
-			if (mouseY > 0.0f) {
-				if (menu >= 0 && menu <= 4 /*6*/) {
-					menu++;
+			if (mouseY > 0.1f) { //atas
+				switch (menu) {
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					case 4: {
+							menu++;
+						}
+						break;
+					case 5: {
+							menu = 0;
+						}
+						break;
 				}
-			} else {
-				if (menu >= 1 && menu <= 5 /*7*/) {
-					menu--;
+			} else if (mouseY < -0.1f) { //bawah
+				switch (menu) {
+					case 0: {
+							menu = 5;
+						}
+						break;
+					case 1:
+					case 2:
+					case 3:
+					case 4:
+					case 5: {
+							menu--;
+						}
+						break;
 				}
 			}
-		}
 
-		if (Input.GetKey (KeyCode.RightShift) && !inSubMenu) {
-			switch (menu) {
-				case 0:
-				case 1:
-				case 2:
-				case 3: {
-						inSubMenu = true;
-					}
-					break;
-				case 4 /*6*/: {
-						//ok
-					}
-					break;
-				case 5 /*7*/: {
-						//cancel
-					}
-					break;
-			}
-		}
+			if (Input.GetButtonDown ("Jump") || Input.GetKeyDown (KeyCode.RightShift)) { //select
+				switch (menu) {
+					case 0: {
+							menu = 6;
+						}
+						break;
+					case 1: {
+							menu = 7;
+						}
+						break;
+					case 2: {
+							menu = 8;
+						}
+						break;
+					case 3: {
+							menu = 9;
+						}
+						break;
+					case 4: {
 
-		if (inSubMenu) {
-			float min = sandboxSliders[menu].minValue;
-			float max = sandboxSliders[menu].maxValue;
-			float change = max - min * sliderPercentage / 100.0f;
-			if (mouseX > 0.1f) {
-				float temp = sandboxSliders[menu].value;
-				sandboxSliders[menu].value += change;
-				if (sandboxSliders[menu].value == temp) {
-					sandboxSliders[menu].value++;
+						}
+						break;
+					case 5: {
+
+						}
+						break;
 				}
-			} else if (mouseX < -0.1f) {
-				float temp = sandboxSliders[menu].value;
-				sandboxSliders[menu].value -= change;
-				if (sandboxSliders[menu].value == temp) {
-					sandboxSliders[menu].value--;
+			}
+
+			if (Input.GetButtonDown ("Jump2") || Input.GetKeyDown (KeyCode.LeftShift)) { //back
+				switch (menu) {
+					case 6: {
+							menu = 0;
+						}
+						break;
+					case 7: {
+							menu = 1;
+						}
+						break;
+					case 8: {
+							menu = 2;
+						}
+						break;
+					case 9: {
+							menu = 3;
+						}
+						break;
+					case 0:
+					case 1:
+					case 2:
+					case 3:
+					case 4: {
+							menu = 5;
+						}
+						break;
+				}
+			}
+
+			if (menu >= 6 && menu <= 9) {
+				if (mouseX > 0.1f) { //kanan
+					switch (menu) {
+						case 6: {
+								float change = (gravMax - gravMin) * (scrollSpeedF / 100.0f);
+								gravSlider.value += change;
+							}
+							break;
+						case 7: {
+								int change = (lengthMax - lengthMin) * scrollSpeedI / 100;
+								lengthSlider.value += change;
+							}
+							break;
+						case 8: {
+								int change = (widthMax - widthMin) * scrollSpeedI / 100;
+								widthSlider.value += change;
+							}
+							break;
+						case 9: {
+								int change = (heightMax - heightMin) * scrollSpeedI / 100;
+								heightSlider.value += change;
+							}
+							break;
+					}
+				} else if (mouseX < -0.1f) { //kiri
+					switch (menu) {
+						case 6: {
+								float change = (gravMax - gravMin) * (scrollSpeedF / 100.0f);
+								gravSlider.value -= change;
+							}
+							break;
+						case 7: {
+								int change = (lengthMax - lengthMin) * scrollSpeedI / 100;
+								lengthSlider.value -= change;
+							}
+							break;
+						case 8: {
+								int change = (widthMax - widthMin) * scrollSpeedI / 100;
+								widthSlider.value -= change;
+							}
+							break;
+						case 9: {
+								int change = (heightMax - heightMin) * scrollSpeedI / 100;
+								heightSlider.value -= change;
+							}
+							break;
+					}
 				}
 			}
 		}
@@ -159,5 +271,11 @@ public class SandBoxCanvasController : MonoBehaviour {
 		//letakkan canvas
 		transform.position = pos;
 		transform.LookAt (player);
+	}
+
+	public bool IsActive {
+		get {
+			return menu >= 0;
+		}
 	}
 }
