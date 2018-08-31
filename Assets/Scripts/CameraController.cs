@@ -20,6 +20,14 @@ public class CameraController : MonoBehaviour {
 	}
 
 	private void Update () {
+		if (SandBoxCanvasController.instance.IsActive) {
+			return;
+		}
+
+		if (LoadingManager.Instance.IsLoading) {
+			return;
+		}
+
 		//input gerakan kamera
 		if (GameplayManager.instance.ShootMode == ShootMode.IDLE) {
 			float mouseX, mouseY, hor, ver;

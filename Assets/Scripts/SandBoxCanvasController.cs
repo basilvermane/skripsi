@@ -32,8 +32,6 @@ public class SandBoxCanvasController : MonoBehaviour {
 	 * 9 = inside max height
 	 */
 
-	public Slider[] sandboxSliders;
-
 	public float maxInputCooldown = 0.5f;
 	private float inputCooldown;
 	public float sliderPercentage = 0.5f;
@@ -92,7 +90,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 			mouseX = Input.GetAxis ("Horizontal") + Input.GetAxis ("Horr");
 			mouseY = Input.GetAxis ("Vertical") + Input.GetAxis ("Verr");
 
-			if (mouseY > 0.1f) { //atas
+			if (mouseY < -0.1f) { //atas
 				switch (menu) {
 					case 0:
 					case 1:
@@ -100,17 +98,20 @@ public class SandBoxCanvasController : MonoBehaviour {
 					case 3:
 					case 4: {
 							menu++;
+							inputCooldown = maxInputCooldown;
 						}
 						break;
 					case 5: {
 							menu = 0;
+							inputCooldown = maxInputCooldown;
 						}
 						break;
 				}
-			} else if (mouseY < -0.1f) { //bawah
+			} else if (mouseY > 0.1f) { //bawah
 				switch (menu) {
 					case 0: {
 							menu = 5;
+							inputCooldown = maxInputCooldown;
 						}
 						break;
 					case 1:
@@ -119,6 +120,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 					case 4:
 					case 5: {
 							menu--;
+							inputCooldown = maxInputCooldown;
 						}
 						break;
 				}
@@ -143,11 +145,11 @@ public class SandBoxCanvasController : MonoBehaviour {
 						}
 						break;
 					case 4: {
-
+							ApplyChanges ();
 						}
 						break;
 					case 5: {
-
+							HideCanvas ();
 						}
 						break;
 				}
@@ -233,22 +235,23 @@ public class SandBoxCanvasController : MonoBehaviour {
 			}
 		}
 
-		anim.SetInteger ("menu", menu);
+		anim.SetBool ("show", menu >= 0);
+		anim.SetFloat ("menu", (menu * 1.0f) / 10.0f);
 	}
 
 	public void ApplyChanges () {
-		float grav = sandboxSliders[0].value;
-		int mapLength = (int) sandboxSliders[1].value;
-		int mapWidth = (int) sandboxSliders[2].value;
-		int mapHeight = (int) sandboxSliders[3].value * 100;
+		float grav = gravSlider.value;
+		int mapLength = (int) lengthSlider.value;
+		int mapWidth = (int) widthSlider.value;
+		int mapHeight = (int) heightSlider.value * 100;
 		GameplayManager.instance.SandboxChange (grav, mapLength, mapWidth, mapHeight);
 		HideCanvas ();
 	}
 
 	public void HideCanvas () {
 		if (menu >= 0) {
-			anim.SetBool ("show", false);
 			menu = -1;
+			anim.SetBool ("show", false);
 		}
 	}
 
@@ -257,7 +260,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 			menu = 0;
 			PlaceCanvas ();
 			anim.SetBool ("show", true);
-			anim.SetInteger ("menu", menu);
+			anim.SetFloat ("menu", 0.0f);
 		}
 	}
 
@@ -271,6 +274,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 		//letakkan canvas
 		transform.position = pos;
 		transform.LookAt (player);
+		transform.Rotate (Vector3.up, 180.0f);
 	}
 
 	public bool IsActive {
