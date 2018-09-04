@@ -47,7 +47,7 @@ public static class LevelParameters {
 	}
 
 	public static LevelParam[] LevelParams = {
-		new LevelParam(9.8f, 100, 100, 300, 100.0f), //1
+		new LevelParam(9.8f, 100, 100, 300, 50.0f), //1
 		new LevelParam(20.0f, 300, 300, 600, 100.0f), //2
 		new LevelParam(9.8f, 500, 500, 600, 200.0f), //3
 		new LevelParam(9.8f, 100, 100, 300, 100.0f), //4

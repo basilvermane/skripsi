@@ -255,12 +255,17 @@ public class SandBoxCanvasController : MonoBehaviour {
 		}
 	}
 
-	public void ShowCanvas () {
+	public void ShowCanvas (float grav, int length, int width, int height) {
 		if (menu < 0) {
 			menu = 0;
 			PlaceCanvas ();
 			anim.SetBool ("show", true);
 			anim.SetFloat ("menu", 0.0f);
+
+			gravSlider.value = grav;
+			lengthSlider.value = length;
+			widthSlider.value = width;
+			heightSlider.value = height;
 		}
 	}
 

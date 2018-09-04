@@ -23,6 +23,24 @@ public class PerlinNoise : MonoBehaviour {
 	private int tempWidth, tempHeight;
 	private float tempMaxHeight;
 
+	public int TLength {
+		get {
+			return terrain.terrainData.heightmapHeight;
+		}
+	}
+
+	public int TWidth {
+		get {
+			return terrain.terrainData.heightmapWidth;
+		}
+	}
+
+	public int THeight {
+		get {
+			return (int) terrain.terrainData.size.y;
+		}
+	}
+
 	private void Awake () {
 		askGenerateNoise = false;
 	}
@@ -40,10 +58,13 @@ public class PerlinNoise : MonoBehaviour {
 			print ("dequeued");
 			GenerateNewNoise (tempWidth, tempHeight, tempMaxHeight);
 		}
+
+		print ("length " + TLength);
+		print ("width " + TWidth);
+		print ("size " + terrain.terrainData.size);
 	}
 
 	public void GenerateNewNoise (int width, int height, float maxHeight) {
-		print (terrain);
 		if (terrain == null) {
 			askGenerateNoise = true;
 			tempWidth = width;
@@ -52,6 +73,7 @@ public class PerlinNoise : MonoBehaviour {
 			print ("queued");
 			return;
 		}
+		print ("not queued");
 		terrain.terrainData.size = new Vector3 (width, maxHeight, height);
 		float[,] noise = Perlin2D (TerrainWidth, TerrainHeight, TerrainGridSize);
 		terrainData.SetHeights (0, 0, noise);

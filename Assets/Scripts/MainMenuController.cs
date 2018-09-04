@@ -86,6 +86,7 @@ public class MainMenuController : MonoBehaviour {
 					case 8: {
 							//select level
 							int level = levelAnimController.GetCurrentLevel ();
+							print ("level " + level);
 							StartCoroutine (LoadingManager.Instance.LoadPuzzle (level));
 						}
 						break;

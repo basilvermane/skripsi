@@ -144,7 +144,7 @@ public class GameplayManager : MonoBehaviour {
 		//nonaktifkan loading
 		LoadingManager.Instance.SetLoadingWall (false);
 		LoadingManager.Instance.SetWinWall (false);
-
+		
 		//jika level negatif maka sandbox mode
 		if (level < 0) {
 			isSandbox = true;
@@ -230,7 +230,7 @@ public class GameplayManager : MonoBehaviour {
 		if ((Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.X)) && isSandbox && shootMode == ShootMode.IDLE) {
 			perlin.HideTerrain ();
 			SandBoxCanvasController.instance.SetPlayer (player.transform);
-			SandBoxCanvasController.instance.ShowCanvas ();
+			SandBoxCanvasController.instance.ShowCanvas (Physics.gravity.y, perlin.TLength, perlin.TWidth, perlin.THeight);
 		}
 
 		if (Input.GetButtonDown ("TimeFreeze") || Input.GetKeyDown (KeyCode.JoystickButton2)) {
