@@ -34,11 +34,11 @@ public class CameraController : MonoBehaviour {
 			mouseX = Input.GetAxis ("Mouse X");
 			mouseY = Input.GetAxis ("Mouse Y");
 			//DEBUG-UNCOMMENT
-			//hor = Input.GetAxis ("Horr");
-			//ver = Input.GetAxis ("Verr");
+			hor = Input.GetAxis ("Horr");
+			ver = Input.GetAxis ("Verr");
 			//DEBUG-COMMENT
-			hor = Input.GetAxis ("Horizontal");
-			ver = Input.GetAxis ("Vertical");
+			//hor = Input.GetAxis ("Horizontal");
+			//ver = Input.GetAxis ("Vertical");
 			if (!(Mathf.Abs (mouseX) <= 0.1f && Mathf.Abs (mouseY) <= 0.1f)) {
 				yaw += mouseX * mouseSensitivity;
 				pitch -= mouseY * mouseSensitivity;
@@ -51,8 +51,8 @@ public class CameraController : MonoBehaviour {
 
 			//ambil arah kamera, hanya x dan z
 			//DEBUG-UNCOMMENT
-			/*float eulerY = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;*/
-			float eulerY = transform.eulerAngles.y;
+			float eulerY = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;
+			//float eulerY = transform.eulerAngles.y;
 
 			//hover atau jatuh
 			float yMove = 0.0f;

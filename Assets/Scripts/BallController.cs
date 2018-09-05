@@ -32,11 +32,11 @@ public class BallController : MonoBehaviour {
 			//ambil input mouse untuk arah lihat
 			float mouseX, mouseY;
 			//DEBUG-UNCOMMENT
-			//mouseX = Input.GetAxis ("Horr");
-			//mouseY = Input.GetAxis ("Verr");
+			mouseX = Input.GetAxis ("Horr");
+			mouseY = Input.GetAxis ("Verr");
 			//DEBUG-COMMENT
-			mouseX = Input.GetAxis ("Horizontal");
-			mouseY = Input.GetAxis ("Vertical");
+			//mouseX = Input.GetAxis ("Horizontal");
+			//mouseY = Input.GetAxis ("Vertical");
 			if (!(Mathf.Abs (mouseX) <= 0.1f && Mathf.Abs (mouseY) <= 0.1f)) {
 				yaw += mouseX * mouseSensitivity;
 				pitch -= mouseY * mouseSensitivity;
