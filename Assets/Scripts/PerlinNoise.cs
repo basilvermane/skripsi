@@ -56,7 +56,7 @@ public class PerlinNoise : MonoBehaviour {
 		if (askGenerateNoise) {
 			askGenerateNoise = false;
 			print ("dequeued");
-			GenerateNewNoise (tempWidth, tempHeight, tempMaxHeight);
+			GenerateNewNoise (tempWidth, tempHeight, tempMaxHeight, true);
 		}
 
 		print ("length " + TLength);
@@ -64,7 +64,7 @@ public class PerlinNoise : MonoBehaviour {
 		print ("size " + terrain.terrainData.size);
 	}
 
-	public void GenerateNewNoise (int width, int height, float maxHeight) {
+	public void GenerateNewNoise (int width, int height, float maxHeight, bool createNewBall) {
 		if (terrain == null) {
 			askGenerateNoise = true;
 			tempWidth = width;
@@ -78,7 +78,8 @@ public class PerlinNoise : MonoBehaviour {
 		float[,] noise = Perlin2D (TerrainWidth, TerrainHeight, TerrainGridSize);
 		terrainData.SetHeights (0, 0, noise);
 		PaintTexture ();
-		GameplayManager.instance.SetBallGoal ();
+		if (createNewBall)
+			GameplayManager.instance.SetBallGoal ();
 	}
 
 	public float PerlinInterpolate (float t) {

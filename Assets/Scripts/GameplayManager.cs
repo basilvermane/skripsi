@@ -104,7 +104,7 @@ public class GameplayManager : MonoBehaviour {
 	
 	private IEnumerator SandboxRoutine (float grav, int mapLength, int mapWidth, int mapHeight) {
 		//generate terrain baru
-		perlin.GenerateNewNoise (mapLength, mapWidth, mapHeight);
+		perlin.GenerateNewNoise (mapLength, mapWidth, mapHeight, false);
 		Physics.gravity = Vector3.down * grav;
 
 		//tempatkan bola dan gol
@@ -160,7 +160,7 @@ public class GameplayManager : MonoBehaviour {
 
 		//generate terrain
 		perlin = GameObject.FindGameObjectWithTag ("Terrain").GetComponent<PerlinNoise> ();
-		perlin.GenerateNewNoise (currentLevel.HeightMapWidth, currentLevel.HeightMapHeight, currentLevel.MaxHeight);
+		perlin.GenerateNewNoise (currentLevel.HeightMapWidth, currentLevel.HeightMapHeight, currentLevel.MaxHeight, true);
 
 		//cari player
 		player = GameObject.Find ("Player").GetComponent<CameraController> ();

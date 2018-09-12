@@ -90,6 +90,7 @@ public class LoadingManager : MonoBehaviour {
 
 	public void SetLoadingWall (bool active, Vector3 pos) {
 		transform.position = pos;
+		print (transform.position);
 		foreach (GameObject wall in loadingWalls) {
 			wall.SetActive (active);
 		}
@@ -105,6 +106,7 @@ public class LoadingManager : MonoBehaviour {
 		newRot *= Quaternion.Euler (Vector3.up * rotY);
 		transform.rotation = newRot;
 		transform.position = pos;
+		print (transform.position);
 		foreach (GameObject wall in loadingWalls) {
 			wall.SetActive (active);
 		}

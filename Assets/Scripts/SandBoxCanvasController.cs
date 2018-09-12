@@ -48,8 +48,19 @@ public class SandBoxCanvasController : MonoBehaviour {
 
 	private Transform player;
 
+	private bool hideTrigger;
+	public bool HideTrigger {
+		get {
+			bool temp = hideTrigger;
+			hideTrigger = false;
+			return temp;
+		}
+	}
+
 	// Use this for initialization
 	private void Start () {
+		hideTrigger = false;
+
 		anim = GetComponent<Animator> ();
 		menu = -1;
 		inputCooldown = 0.0f;
@@ -252,6 +263,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 		if (menu >= 0) {
 			menu = -1;
 			anim.SetBool ("show", false);
+			hideTrigger = true;
 		}
 	}
 
