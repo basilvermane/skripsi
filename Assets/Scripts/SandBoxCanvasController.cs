@@ -57,6 +57,12 @@ public class SandBoxCanvasController : MonoBehaviour {
 		}
 	}
 
+	public bool Shown {
+		get {
+			return menu >= 0;
+		}
+	}
+
 	// Use this for initialization
 	private void Start () {
 		hideTrigger = false;
