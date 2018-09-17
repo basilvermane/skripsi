@@ -3,7 +3,7 @@ using System.Collections;
 
 public class BallController : MonoBehaviour {
 
-	public Transform arrowTransform;
+	public ArrowController arrowTransform;
 	private float yaw = 0.0f, pitch = 0.0f;
 	private Vector3 currentRot;
 	public float mouseSensitivity = 10.0f;
@@ -19,8 +19,17 @@ public class BallController : MonoBehaviour {
 	//private float savedGravity;
 	private Vector3 savedForce;
 
+	public ArrowController gravArrow;
+	public ArrowController[] forceArrows;
+	public ArrowController[] veloArrows;
+	/* 0 = main
+	 * 1 = x
+	 * 2 = y
+	 * 3 = z
+	 */
+
 	// Use this for initialization
-	void Start () {
+	private void Start () {
 		rigid = GetComponent<Rigidbody> ();
 		rigid.mass = ballMass;
 	}
@@ -31,12 +40,8 @@ public class BallController : MonoBehaviour {
 			//print ("shootmode");
 			//ambil input mouse untuk arah lihat
 			float mouseX, mouseY;
-			//DEBUG-UNCOMMENT
-			mouseX = Input.GetAxis ("Horr");
-			mouseY = Input.GetAxis ("Verr");
-			//DEBUG-COMMENT
-			//mouseX = Input.GetAxis ("Horizontal");
-			//mouseY = Input.GetAxis ("Vertical");
+			mouseX = Input.GetAxis ("Horr") + Input.GetAxis ("Horizontal");
+			mouseY = Input.GetAxis ("Verr") + Input.GetAxis ("Vertical");
 			if (!(Mathf.Abs (mouseX) <= 0.1f && Mathf.Abs (mouseY) <= 0.1f)) {
 				yaw += mouseX * mouseSensitivity;
 				pitch -= mouseY * mouseSensitivity;
@@ -44,14 +49,37 @@ public class BallController : MonoBehaviour {
 			pitch = Mathf.Clamp (pitch, minPitch, maxPitch);
 
 			//tentukan arah panah
+			Transform arrowTemp = arrowTransform.GetTransform ();
 			currentRot = new Vector3 (pitch, yaw);
-			arrowTransform.eulerAngles = currentRot;
-			arrowTransform.Rotate (new Vector3 (90.0f, 0.0f, 0.0f));
+			arrowTemp.eulerAngles = currentRot;
+			arrowTemp.Rotate (new Vector3 (90.0f, 0.0f, 0.0f));
 
 			//offset position berdasarkan arah panah
-			arrowTransform.position = transform.position + arrowTransform.up * distance;
+			arrowTemp.position = transform.position + arrowTemp.up * distance;
+
+			arrowTransform.SetTransform (arrowTemp);
 		}
-		GetPhysics ();
+
+		//physics vision
+		Vector3 currentVelo = rigid.velocity;
+		Vector3 currentGrav = Physics.gravity;
+		float mass = rigid.mass;
+
+		Vector3 veloNormal = currentVelo.normalized;
+		Transform veloT = veloArrows[0].GetTransform ();
+		veloT.localPosition = veloNormal;
+		//Vector3 newRot = new Vector3 (currentVelo.y, currentVelo.x);
+		//veloT.localEulerAngles = newRot;
+		//veloT.Rotate (new Vector3 (90.0f, 0.0f, 0.0f));
+		veloArrows[0].SetTransform (veloT);
+	}
+
+	public void ChangeShootMode (ShootMode sm) {
+		if (sm == ShootMode.AIM) {
+			arrowTransform.SetMeshVisible (true);
+		} else {
+			arrowTransform.SetMeshVisible (false);
+		}
 	}
 
 	private void SaveState () {
@@ -81,7 +109,7 @@ public class BallController : MonoBehaviour {
 	}
 
 	public void Shoot (float forceMagnitude) {
-		Vector3 dir = arrowTransform.up.normalized;
+		Vector3 dir = arrowTransform.GetDirection (true);
 		print (dir);
 		if (GameplayManager.instance.TimeFreeze) {
 			savedForce = dir * forceMagnitude;
@@ -108,10 +136,13 @@ public class BallController : MonoBehaviour {
 		rigid.velocity = Vector3.zero;
 	}
 
-	private void GetPhysics () {
-		Vector3 currentVelo = rigid.velocity;
-		Vector3 currentGrav = Physics.gravity;
-		float mass = rigid.mass;
-		//print (currentVelo + " " + currentGrav + " " + mass);
+	public void TogglePhysicsVision (bool pv) {
+		gravArrow.SetMeshVisible (pv);
+		foreach (ArrowController ac in forceArrows) {
+			ac.SetMeshVisible (pv);
+		}
+		foreach (ArrowController ac in veloArrows) {
+			ac.SetMeshVisible (pv);
+		}
 	}
 }

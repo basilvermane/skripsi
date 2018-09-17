@@ -227,35 +227,37 @@ public class GameplayManager : MonoBehaviour {
 		}*/
 
 		//input
+		//masuk sandbox canvas
 		if ((Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.X)) && isSandbox && shootMode == ShootMode.IDLE) {
 			perlin.HideTerrain ();
 			SandBoxCanvasController.instance.SetPlayer (player.transform);
 			SandBoxCanvasController.instance.ShowCanvas (Physics.gravity.y, perlin.TLength, perlin.TWidth, perlin.THeight);
 		}
 
+		//time freeze
 		if (Input.GetButtonDown ("TimeFreeze") || Input.GetKeyDown (KeyCode.JoystickButton2)) {
 			timeFreeze = !timeFreeze;
 			stageBall.TimeFreeze (timeFreeze);
 		}
 
+		//physics vision
 		if (Input.GetButtonDown ("PhysicsVision") || Input.GetKeyDown (KeyCode.JoystickButton1)) {
 			physicsVision = !physicsVision;
+			stageBall.TogglePhysicsVision (physicsVision);
 		}
 
+		//ganti shoot mode
 		if (Input.GetButtonDown ("ShootMode") || Input.GetKeyDown (KeyCode.JoystickButton0)) {
-			if (shootMode == ShootMode.IDLE) ChangeShootMode (ShootMode.AIM);
-			/*else if (shootMode == ShootMode.AIM) {
-				//ganti ke power
-				ChangeShootMode (ShootMode.POWER);
-
-
-			}*/ else {
+			if (shootMode == ShootMode.IDLE) {
+				ChangeShootMode (ShootMode.AIM);
+			} else {
 				//tembak, kembali ke idle
 				float force = powerControl.GetForce ();
 				stageBall.Shoot (force);
 				shotCount++;
 				ChangeShootMode (ShootMode.IDLE);
 			}
+			stageBall.ChangeShootMode (shootMode);
 			//aimTest1.SetVisible (shootMode);
 		}
 

@@ -83,6 +83,7 @@ public class CanvasController : MonoBehaviour {
 		}
 	}
 
+	//set target object di world
 	public void SetTargetObject (Transform target) {
 		targetObject = target;
 	}
