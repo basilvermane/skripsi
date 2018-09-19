@@ -9,9 +9,10 @@ public class BallController : MonoBehaviour {
 	public float mouseSensitivity = 10.0f;
 	public float minPitch = -90.0f;
 	public float maxPitch = 90.0f;
-	public float distance = 1.0f;
 
 	public float ballMass = 1.0f;
+
+	public float arrowLengthModifier = 0.2f;
 
 	private Rigidbody rigid;
 
@@ -36,7 +37,7 @@ public class BallController : MonoBehaviour {
 
 	private void Update () {
 		//input
-		if (GameplayManager.instance.ShootMode == ShootMode.AIM) {
+		if (GameplayManager.Instance.ShootMode == ShootMode.AIM) {
 			//print ("shootmode");
 			//ambil input mouse untuk arah lihat
 			float mouseX, mouseY;
@@ -49,29 +50,34 @@ public class BallController : MonoBehaviour {
 			pitch = Mathf.Clamp (pitch, minPitch, maxPitch);
 
 			//tentukan arah panah
-			Transform arrowTemp = arrowTransform.GetTransform ();
+			Vector3 oriPos = arrowTransform.GetPosition ();
+			Quaternion oriRot = arrowTransform.GetRotation ();
 			currentRot = new Vector3 (pitch, yaw);
-			arrowTemp.eulerAngles = currentRot;
-			arrowTemp.Rotate (new Vector3 (90.0f, 0.0f, 0.0f));
+			oriRot.eulerAngles = currentRot;
+			oriRot *= Quaternion.AngleAxis (90.0f, Vector3.right);
 
 			//offset position berdasarkan arah panah
-			arrowTemp.position = transform.position + arrowTemp.up * distance;
+			oriPos = transform.position + arrowTransform.GetDirection () * arrowTransform.GetArrowLength ();
 
-			arrowTransform.SetTransform (arrowTemp);
+			arrowTransform.SetTransform (oriPos, oriRot);
 		}
+	}
 
-		//physics vision
+	private void LateUpdate () {
+		//get physics
 		Vector3 currentVelo = rigid.velocity;
 		Vector3 currentGrav = Physics.gravity;
 		float mass = rigid.mass;
 
-		Vector3 veloNormal = currentVelo.normalized;
-		Transform veloT = veloArrows[0].GetTransform ();
-		veloT.localPosition = veloNormal;
-		//Vector3 newRot = new Vector3 (currentVelo.y, currentVelo.x);
-		//veloT.localEulerAngles = newRot;
-		//veloT.Rotate (new Vector3 (90.0f, 0.0f, 0.0f));
-		veloArrows[0].SetTransform (veloT);
+		//velocity arrow
+		float length = currentVelo.magnitude;
+		veloArrows[0].SetArrowLength (length * arrowLengthModifier);
+		Vector3 veloPos = currentVelo * arrowLengthModifier;
+		veloArrows[0].SetTransform (veloPos);
+
+		//velocity text
+		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetText (length + " m/s");
+		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetVisible (true);
 	}
 
 	public void ChangeShootMode (ShootMode sm) {
@@ -109,9 +115,9 @@ public class BallController : MonoBehaviour {
 	}
 
 	public void Shoot (float forceMagnitude) {
-		Vector3 dir = arrowTransform.GetDirection (true);
+		Vector3 dir = arrowTransform.GetDirection ();
 		print (dir);
-		if (GameplayManager.instance.TimeFreeze) {
+		if (GameplayManager.Instance.TimeFreeze) {
 			savedForce = dir * forceMagnitude;
 		} else {
 			print (dir * forceMagnitude);
@@ -143,6 +149,10 @@ public class BallController : MonoBehaviour {
 		}
 		foreach (ArrowController ac in veloArrows) {
 			ac.SetMeshVisible (pv);
+		}
+
+		for (int i = 2; i < 11; i++) {
+			CanvasController.Instances[i].SetVisible (true);
 		}
 	}
 }

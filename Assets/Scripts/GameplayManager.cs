@@ -14,7 +14,7 @@ public class GameplayManager : MonoBehaviour {
 
 	//singleton
 	private static GameplayManager _instance;
-	public static GameplayManager instance {
+	public static GameplayManager Instance {
 		get {
 			return _instance;
 		}
@@ -73,8 +73,6 @@ public class GameplayManager : MonoBehaviour {
 	public GameObject ballPrefab;
 	public GameObject goalPrefab;
 	public PowerMeterController powerControl;
-
-	public CanvasController canvasController;
 
 	public Text testText;
 
@@ -201,9 +199,10 @@ public class GameplayManager : MonoBehaviour {
 
 		ballPos = new Vector3 (ballPosTemp.x, ballY, ballPosTemp.y);
 		goalPos = new Vector3 (goalPosTemp.x, goalY, goalPosTemp.y);
-		stageBall = Instantiate (ballPrefab, ballPos, Quaternion.identity).GetComponent<BallController> ();
+		stageBall = Instantiate (ballPrefab, ballPos, Quaternion.identity).GetComponentInChildren<BallController> ();
 		print (stageBall);
-		canvasController.SetTargetObject (stageBall.transform);
+		CanvasController.Instances[(int) CanvasType.GAME].SetTargetObject (stageBall.transform);
+		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetTargetObject (stageBall.arrowTransform.transform);
 		stageGoal = Instantiate (goalPrefab, goalPos, Quaternion.identity).GetComponent<Transform> ();
 
 		//tempatkan player
@@ -279,13 +278,13 @@ public class GameplayManager : MonoBehaviour {
 			case ShootMode.IDLE: {
 					print ("deactivate canvas");
 					powerControl.Deactivate ();
-					canvasController.SetVisible (false);
+					CanvasController.Instances[(int) CanvasType.GAME].SetVisible (false);
 				}
 				break;
 			case ShootMode.AIM:
 			case ShootMode.POWER: {
 					print ("activate canvas");
-					canvasController.SetVisible (true);
+					CanvasController.Instances[(int) CanvasType.GAME].SetVisible (true);
 					powerControl.Activate ();
 				} break;
 			/*case ShootMode.AIM: {

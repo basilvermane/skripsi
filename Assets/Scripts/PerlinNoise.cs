@@ -79,7 +79,7 @@ public class PerlinNoise : MonoBehaviour {
 		terrainData.SetHeights (0, 0, noise);
 		PaintTexture ();
 		if (createNewBall)
-			GameplayManager.instance.SetBallGoal ();
+			GameplayManager.Instance.SetBallGoal ();
 	}
 
 	public float PerlinInterpolate (float t) {

@@ -261,7 +261,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 		int mapLength = (int) lengthSlider.value;
 		int mapWidth = (int) widthSlider.value;
 		int mapHeight = (int) heightSlider.value * 100;
-		GameplayManager.instance.SandboxChange (grav, mapLength, mapWidth, mapHeight);
+		GameplayManager.Instance.SandboxChange (grav, mapLength, mapWidth, mapHeight);
 		HideCanvas ();
 	}
 

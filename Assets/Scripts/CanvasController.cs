@@ -1,9 +1,28 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
+
+public enum CanvasType {
+	GAME = 0,
+	AIM_ARROW = 1,
+	GRAV_ARROW = 2,
+	FORCE_ARROW = 3,
+	FORCE_ARROW_X = 4,
+	FORCE_ARROW_Y = 5,
+	FORCE_ARROW_Z = 6,
+	VELO_ARROW = 7,
+	VELO_ARROW_X = 8,
+	VELO_ARROW_Y = 9,
+	VELO_ARROW_Z = 10,
+	Length
+};
 
 [RequireComponent (typeof (Canvas))]
 public class CanvasController : MonoBehaviour {
+
+	public static CanvasController[] Instances = new CanvasController[(int) CanvasType.Length];
+	public CanvasType type;
 
 	//attach to parent canvas
 	private Canvas canvas;
@@ -16,10 +35,17 @@ public class CanvasController : MonoBehaviour {
 	private bool statusVisible;
 	private RectTransform[] targetUITrans;
 
+	public Text text;
+
 	private float canvasWidth, canvasHeight;
 
 	private void Awake () {
-		DontDestroyOnLoad (gameObject);
+		if (Instances[(int) type] == null) {
+			DontDestroyOnLoad (gameObject);
+			Instances[(int) type] = this;
+		} else {
+			Destroy (gameObject);
+		}
 	}
 
 	private void Start () {
@@ -107,5 +133,9 @@ public class CanvasController : MonoBehaviour {
 	// called when the game is terminated
 	private void OnDisable () {
 		SceneManager.sceneLoaded -= OnSceneLoaded;
+	}
+
+	public void SetText (string t) {
+		text.text = t;
 	}
 }

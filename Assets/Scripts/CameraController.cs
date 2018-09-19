@@ -29,7 +29,7 @@ public class CameraController : MonoBehaviour {
 		}
 
 		//input gerakan kamera
-		if (GameplayManager.instance.ShootMode == ShootMode.IDLE) {
+		if (GameplayManager.Instance.ShootMode == ShootMode.IDLE) {
 			float mouseX, mouseY, hor, ver;
 			mouseX = Input.GetAxis ("Mouse X");
 			mouseY = Input.GetAxis ("Mouse Y");
