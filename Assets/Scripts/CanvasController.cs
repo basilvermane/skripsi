@@ -39,6 +39,10 @@ public class CanvasController : MonoBehaviour {
 
 	private float canvasWidth, canvasHeight;
 
+	public bool ChangeSizeByDist = false;
+	public int minSize, maxSize;
+	public float minDist, maxDist;
+
 	private void Awake () {
 		if (Instances[(int) type] == null) {
 			DontDestroyOnLoad (gameObject);
@@ -105,6 +109,18 @@ public class CanvasController : MonoBehaviour {
 			//print ("process " + targetUIPos.x + " " + targetUIPos.y);
 			foreach (RectTransform trans in targetUITrans) {
 				trans.anchoredPosition3D = targetUIPos;
+			}
+		}
+
+		if (ChangeSizeByDist) {
+			float dist = (targetCamera.transform.position - targetObject.position).magnitude;
+			if (dist < minDist) {
+				text.fontSize = maxSize;
+			} else if (dist > maxDist) {
+				text.fontSize = minSize;
+			} else {
+				float percentage = (dist - minDist) / (maxDist - minDist);
+				text.fontSize = (int) Mathf.Round ((maxSize * 1.0f) - (percentage * (maxSize - minSize)));
 			}
 		}
 	}

@@ -531,6 +531,11 @@ MonoBehaviour:
   - {fileID: 443822100}
   targetCanvas: {fileID: 137809561}
   text: {fileID: 443822101}
+  ChangeSizeByDist: 1
+  minSize: 0
+  maxSize: 50
+  minDist: 0
+  maxDist: 20
 --- !u!114 &137809558
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1536,7 +1541,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -1618,6 +1623,11 @@ MonoBehaviour:
   - {fileID: 1246987553}
   targetCanvas: {fileID: 450778219}
   text: {fileID: 0}
+  ChangeSizeByDist: 0
+  minSize: 0
+  maxSize: 0
+  minDist: 0
+  maxDist: 0
 --- !u!114 &450778216
 MonoBehaviour:
   m_ObjectHideFlags: 0

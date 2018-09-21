@@ -202,7 +202,7 @@ public class GameplayManager : MonoBehaviour {
 		stageBall = Instantiate (ballPrefab, ballPos, Quaternion.identity).GetComponentInChildren<BallController> ();
 		print (stageBall);
 		CanvasController.Instances[(int) CanvasType.GAME].SetTargetObject (stageBall.transform);
-		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetTargetObject (stageBall.arrowTransform.transform);
+		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetTargetObject (stageBall.veloArrows[0].transform);
 		stageGoal = Instantiate (goalPrefab, goalPos, Quaternion.identity).GetComponent<Transform> ();
 
 		//tempatkan player
