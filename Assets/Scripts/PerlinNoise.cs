@@ -23,6 +23,8 @@ public class PerlinNoise : MonoBehaviour {
 	private int tempWidth, tempHeight;
 	private float tempMaxHeight;
 
+	public Transform[] Walls;
+
 	public int TLength {
 		get {
 			return terrain.terrainData.heightmapHeight;
@@ -47,7 +49,6 @@ public class PerlinNoise : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		print ("start");
 		terrain = GetComponent<Terrain> ();
 		terrainData = terrain.terrainData;
 		TerrainWidth = terrainData.heightmapWidth;
@@ -55,13 +56,8 @@ public class PerlinNoise : MonoBehaviour {
 		anim = GetComponent<Animator> ();
 		if (askGenerateNoise) {
 			askGenerateNoise = false;
-			print ("dequeued");
 			GenerateNewNoise (tempWidth, tempHeight, tempMaxHeight, true);
 		}
-
-		print ("length " + TLength);
-		print ("width " + TWidth);
-		print ("size " + terrain.terrainData.size);
 	}
 
 	public void GenerateNewNoise (int width, int height, float maxHeight, bool createNewBall) {
@@ -70,16 +66,15 @@ public class PerlinNoise : MonoBehaviour {
 			tempWidth = width;
 			tempHeight = height;
 			tempMaxHeight = maxHeight;
-			print ("queued");
 			return;
 		}
-		print ("not queued");
 		terrain.terrainData.size = new Vector3 (width, maxHeight, height);
 		float[,] noise = Perlin2D (TerrainWidth, TerrainHeight, TerrainGridSize);
 		terrainData.SetHeights (0, 0, noise);
 		PaintTexture ();
 		if (createNewBall)
 			GameplayManager.Instance.SetBallGoal ();
+		SetWalls (width, height);
 	}
 
 	public float PerlinInterpolate (float t) {
@@ -88,6 +83,25 @@ public class PerlinNoise : MonoBehaviour {
 
 	public float GradientCalc (float x, float y, Vector2 grad) {
 		return (x * grad.x) + (y * grad.y);
+	}
+
+	private void SetWalls (int width, int height) {
+		float midX = width / 2.0f;
+		float midZ = height / 2.0f;
+		Walls[0].position = new Vector3 (midX, 0.0f, 0.0f);
+		Walls[1].position = new Vector3 (0.0f, 0.0f, midZ);
+		Walls[2].position = new Vector3 (midX, 0.0f, height);
+		Walls[3].position = new Vector3 (width, 0.0f, midZ);
+
+		float scaleWidth = width / 10.0f;
+		float scaleHeight = height / 10.0f;
+
+		Vector3 wallScale = Walls[0].localScale;
+
+		wallScale.x = scaleWidth;
+		Walls[0].localScale = Walls[2].localScale = wallScale;
+		wallScale.x = scaleHeight;
+		Walls[1].localScale = Walls[3].localScale = wallScale;
 	}
 
 	public float[,] Perlin2D (int width, int height, int gridsize) {
@@ -142,7 +156,6 @@ public class PerlinNoise : MonoBehaviour {
 	}
 
 	private void PaintTexture () {
-		print ("painttex");
 		float[,,] splatmapData = new float[
 			terrainData.alphamapWidth,
 			terrainData.alphamapHeight,

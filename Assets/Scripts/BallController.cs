@@ -50,14 +50,13 @@ public class BallController : MonoBehaviour {
 			pitch = Mathf.Clamp (pitch, minPitch, maxPitch);
 
 			//tentukan arah panah
-			Vector3 oriPos = arrowTransform.GetPosition ();
 			Quaternion oriRot = arrowTransform.GetRotation ();
 			currentRot = new Vector3 (pitch, yaw);
 			oriRot.eulerAngles = currentRot;
 			oriRot *= Quaternion.AngleAxis (90.0f, Vector3.right);
 
 			//offset position berdasarkan arah panah
-			oriPos = transform.position + arrowTransform.GetDirection () * arrowTransform.GetArrowLength ();
+			Vector3 oriPos = transform.localPosition + arrowTransform.GetDirection () * arrowTransform.GetArrowLength ();
 
 			arrowTransform.SetTransform (oriPos, oriRot);
 		}

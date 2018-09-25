@@ -87,8 +87,6 @@ public class GameplayManager : MonoBehaviour {
 
 	private CameraController player;
 
-	//public float
-
 	public void SandboxChange (float grav, int mapLength, int mapWidth, int mapHeight) {
 		if (!isSandbox) return;
 

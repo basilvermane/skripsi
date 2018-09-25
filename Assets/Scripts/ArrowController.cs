@@ -29,13 +29,13 @@ public class ArrowController : MonoBehaviour {
 
 	public void SetTransform (Vector3 pos, Quaternion rot) {
 		//local position, global rotation
-		transform.position = pos + targetBall.transform.position;
+		transform.localPosition = pos;
 		transform.rotation = rot;
 	}
 
 	public Vector3 GetPosition () {
 		//local position
-		return transform.position - targetBall.transform.position;
+		return transform.localPosition;
 	}
 
 	public Quaternion GetRotation () {

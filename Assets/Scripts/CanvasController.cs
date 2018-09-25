@@ -120,7 +120,7 @@ public class CanvasController : MonoBehaviour {
 				text.fontSize = minSize;
 			} else {
 				float percentage = (dist - minDist) / (maxDist - minDist);
-				text.fontSize = (int) Mathf.Round ((maxSize * 1.0f) - (percentage * (maxSize - minSize)));
+				text.fontSize = Mathf.RoundToInt ((maxSize * 1.0f) - (percentage * (maxSize - minSize)));
 			}
 		}
 	}
