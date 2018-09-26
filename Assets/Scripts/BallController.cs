@@ -23,6 +23,7 @@ public class BallController : MonoBehaviour {
 	public ArrowController gravArrow;
 	public ArrowController[] forceArrows;
 	public ArrowController[] veloArrows;
+	public ArrowController goalArrow;
 	/* 0 = main
 	 * 1 = x
 	 * 2 = y
@@ -62,6 +63,18 @@ public class BallController : MonoBehaviour {
 		}
 	}
 
+	public void SetGoalArrow (Vector3 goalPos) {
+		Vector3 distVector = (goalPos - transform.position);
+		float distance = distVector.magnitude;
+		goalArrow.SetArrowLength (distance * arrowLengthModifier);
+		Vector3 goalArrowPos = distVector * arrowLengthModifier;
+		goalArrow.SetTransform (goalArrowPos);
+
+		CanvasController.Instances[(int) CanvasType.DISTANCE].SetText (distance + " m");
+		//DEBUG-COMMENT
+		CanvasController.Instances[(int) CanvasType.DISTANCE].SetVisible (true);
+	}
+
 	private void LateUpdate () {
 		//get physics
 		Vector3 currentVelo = rigid.velocity;
@@ -76,7 +89,8 @@ public class BallController : MonoBehaviour {
 
 		//velocity text
 		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetText (length + " m/s");
-		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetVisible (true);
+		//DEBUG-COMMENT
+		//CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetVisible (true);
 	}
 
 	public void ChangeShootMode (ShootMode sm) {
@@ -149,9 +163,11 @@ public class BallController : MonoBehaviour {
 		foreach (ArrowController ac in veloArrows) {
 			ac.SetMeshVisible (pv);
 		}
+		goalArrow.SetMeshVisible (pv);
 
-		for (int i = 2; i < 11; i++) {
-			CanvasController.Instances[i].SetVisible (true);
+		for (int i = 2; i < (int) CanvasType.Length; i++) {
+			if (CanvasController.Instances[i] != null)
+				CanvasController.Instances[i].SetVisible (true);
 		}
 	}
 }

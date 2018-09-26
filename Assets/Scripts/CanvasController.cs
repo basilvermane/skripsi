@@ -15,6 +15,7 @@ public enum CanvasType {
 	VELO_ARROW_X = 8,
 	VELO_ARROW_Y = 9,
 	VELO_ARROW_Z = 10,
+	DISTANCE = 11,
 	Length
 };
 

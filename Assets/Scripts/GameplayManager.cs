@@ -264,11 +264,11 @@ public class GameplayManager : MonoBehaviour {
 		}
 	}
 
-	private void FixedUpdate () {
+	/*private void FixedUpdate () {
 		//physics processing
 		if (stageBall != null && stageGoal != null)
 			ballToGoalDist = (stageBall.transform.position - stageGoal.position);
-	}
+	}*/
 
 	private void ChangeShootMode (ShootMode mode) {
 		shootMode = mode;
@@ -302,6 +302,15 @@ public class GameplayManager : MonoBehaviour {
 				}
 				break;
 		}
+	}
+
+	private void LateUpdate () {
+		if (LoadingManager.Instance.IsLoading) {
+			return;
+		}
+
+		if (stageBall != null && stageGoal != null)
+			stageBall.SetGoalArrow (stageGoal.position);
 	}
 
 	//debugging purposes only
