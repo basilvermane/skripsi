@@ -16,7 +16,7 @@ public enum CanvasType {
 	VELO_ARROW_Y = 9,
 	VELO_ARROW_Z = 10,
 	DISTANCE = 11,
-	Length
+	Length = 12
 };
 
 [RequireComponent (typeof (Canvas))]
@@ -80,7 +80,7 @@ public class CanvasController : MonoBehaviour {
 	public void SetVisible () {
 		if (targetObject == null || !canvas.enabled) return;
 		statusVisible = !statusVisible;
-		print ("inside setvisible");
+		//print ("inside setvisible");
 		foreach (GameObject ui in targetUI) {
 			ui.SetActive (statusVisible);
 			print (ui + " " + statusVisible);
@@ -91,10 +91,10 @@ public class CanvasController : MonoBehaviour {
 	public void SetVisible (bool visible) {
 		if (targetObject == null || !canvas.enabled) return;
 		statusVisible = visible;
-		print ("inside setvisible");
+		//print ("inside setvisible");
 		foreach (GameObject ui in targetUI) {
+			print (ui.name + " aktif");
 			ui.SetActive (statusVisible);
-			print (ui + " " + statusVisible);
 		}
 	}
 

@@ -72,7 +72,7 @@ public class BallController : MonoBehaviour {
 
 		CanvasController.Instances[(int) CanvasType.DISTANCE].SetText (distance + " m");
 		//DEBUG-COMMENT
-		CanvasController.Instances[(int) CanvasType.DISTANCE].SetVisible (true);
+		//CanvasController.Instances[(int) CanvasType.DISTANCE].SetVisible (true);
 	}
 
 	private void LateUpdate () {
@@ -115,8 +115,8 @@ public class BallController : MonoBehaviour {
 		rigid.angularVelocity = savedAngVelo;
 		rigid.useGravity = true;
 		if (savedForce != Vector3.zero) {
-			rigid.AddForce (savedForce);
-		}
+			rigid.AddForce (savedForce, ForceMode.Impulse);
+		} 
 	}
 
 	public void TimeFreeze (bool tf) {
@@ -166,8 +166,10 @@ public class BallController : MonoBehaviour {
 		goalArrow.SetMeshVisible (pv);
 
 		for (int i = 2; i < (int) CanvasType.Length; i++) {
-			if (CanvasController.Instances[i] != null)
-				CanvasController.Instances[i].SetVisible (true);
+			if (CanvasController.Instances[i] != null) {
+				CanvasController.Instances[i].SetVisible (pv);
+				print ("canvas " + i + " aktif");
+			}
 		}
 	}
 }
