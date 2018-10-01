@@ -37,11 +37,13 @@ public class CanvasController : MonoBehaviour {
 	private RectTransform[] targetUITrans;
 
 	public Text text;
+	public RectTransform textBox;
 
 	private float canvasWidth, canvasHeight;
 
 	public bool ChangeSizeByDist = false;
-	public int minSize, maxSize;
+	public int minTextSize, maxTextSize;
+	public float minBoxHeight, maxBoxHeight, minBoxWidth, maxBoxWidth;
 	public float minDist, maxDist;
 
 	private void Awake () {
@@ -115,14 +117,23 @@ public class CanvasController : MonoBehaviour {
 
 		if (ChangeSizeByDist) {
 			float dist = (targetCamera.transform.position - targetObject.position).magnitude;
+
+			float hh, ww;
 			if (dist < minDist) {
-				text.fontSize = maxSize;
+				text.fontSize = maxTextSize;
+				hh = maxBoxHeight;
+				ww = maxBoxWidth;
 			} else if (dist > maxDist) {
-				text.fontSize = minSize;
+				text.fontSize = minTextSize;
+				hh = minBoxHeight;
+				ww = minBoxWidth;
 			} else {
 				float percentage = (dist - minDist) / (maxDist - minDist);
-				text.fontSize = Mathf.RoundToInt ((maxSize * 1.0f) - (percentage * (maxSize - minSize)));
+				text.fontSize = Mathf.RoundToInt ((maxTextSize * 1.0f) - (percentage * (maxTextSize - minTextSize)));
+				hh = maxBoxHeight - (percentage * (maxBoxHeight - minBoxHeight));
+				ww = maxBoxWidth - (percentage * (maxBoxWidth - minBoxWidth));
 			}
+			textBox.sizeDelta = new Vector2 (ww, hh);
 		}
 	}
 
@@ -140,6 +151,7 @@ public class CanvasController : MonoBehaviour {
 	private void OnSceneLoaded (Scene scene, LoadSceneMode mode) {
 		if (scene.name.Equals ("main")) {
 			targetCamera = Camera.main;
+			GetComponent<Canvas> ().worldCamera = Camera.main;
 			canvas.enabled = true;
 		} else {
 			targetCamera = null;

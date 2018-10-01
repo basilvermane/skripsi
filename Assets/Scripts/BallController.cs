@@ -70,7 +70,7 @@ public class BallController : MonoBehaviour {
 		Vector3 goalArrowPos = distVector * arrowLengthModifier;
 		goalArrow.SetTransform (goalArrowPos);
 
-		CanvasController.Instances[(int) CanvasType.DISTANCE].SetText (distance + " m");
+		CanvasController.Instances[(int) CanvasType.DISTANCE].SetText (System.Math.Round (distance, 2) + " m");
 		//DEBUG-COMMENT
 		//CanvasController.Instances[(int) CanvasType.DISTANCE].SetVisible (true);
 	}
@@ -88,7 +88,7 @@ public class BallController : MonoBehaviour {
 		veloArrows[0].SetTransform (veloPos);
 
 		//velocity text
-		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetText (length + " m/s");
+		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetText (System.Math.Round (length, 2) + " m/s");
 		//DEBUG-COMMENT
 		//CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetVisible (true);
 	}
@@ -116,7 +116,7 @@ public class BallController : MonoBehaviour {
 		rigid.useGravity = true;
 		if (savedForce != Vector3.zero) {
 			rigid.AddForce (savedForce, ForceMode.Impulse);
-		} 
+		}
 	}
 
 	public void TimeFreeze (bool tf) {

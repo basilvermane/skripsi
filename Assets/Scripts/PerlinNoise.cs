@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent (typeof (Terrain))]
 public class PerlinNoise : MonoBehaviour {
@@ -239,5 +240,15 @@ public class PerlinNoise : MonoBehaviour {
 
 	public void HideTerrain () {
 		anim.SetBool ("show", false);
+	}
+
+	public Text t;
+	public void SetText (string tt) {
+		t.text = tt;
+	}
+	public Transform mC;
+
+	private void Update () {
+		SetText (Camera.allCameras.Length + "");
 	}
 }

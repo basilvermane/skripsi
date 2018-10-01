@@ -324,6 +324,11 @@ public class GameplayManager : MonoBehaviour {
 		//placeholder
 		ShowPlaceholderText ("Game finished!");
 
+		//hide everything else
+		perlin.HideTerrain ();
+		stageBall.gameObject.SetActive (false);
+		stageGoal.gameObject.SetActive (false);
+
 		//show game stats and reset to menu
 		StartCoroutine (LoadingManager.Instance.WinScreen (shotCount));
 	}
