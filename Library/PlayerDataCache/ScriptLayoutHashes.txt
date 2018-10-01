@@ -1,6 +1,6 @@
 Android
 PlayerPath?
-G:/Unity Projects/Parabolix/Tes Skripsi/Builds/2018-10-01-14-29.apk
+G:/Unity Projects/Parabolix/Tes Skripsi/Builds/2018-10-01-14-43.apk
 SceneListBegin?
 Assets/Scenes/menu.unity
 Assets/Scenes/main.unity
