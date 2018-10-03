@@ -30,10 +30,16 @@ public class BallController : MonoBehaviour {
 	 * 3 = z
 	 */
 
+	private int switchObserver = 0;
+
+	private GameObject ghostBall;
+
 	// Use this for initialization
 	private void Start () {
 		rigid = GetComponent<Rigidbody> ();
 		rigid.mass = ballMass;
+
+		ghostBall = GameObject.Find ("Ghost");
 	}
 
 	private void Update () {
@@ -91,6 +97,13 @@ public class BallController : MonoBehaviour {
 		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetText (System.Math.Round (length, 2) + " m/s");
 		//DEBUG-COMMENT
 		//CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetVisible (true);
+
+		if (switchObserver == 1) {
+			switchObserver++;
+		} else if (switchObserver == 2) {
+			switchObserver = 0;
+			print ("velo shot observed " + rigid.velocity.magnitude);
+		}
 	}
 
 	public void ChangeShootMode (ShootMode sm) {
@@ -128,13 +141,31 @@ public class BallController : MonoBehaviour {
 	}
 
 	public void Shoot (float forceMagnitude) {
+		rigid.velocity = Vector3.zero;
 		Vector3 dir = arrowTransform.GetDirection ();
-		print (dir);
+		//print (dir);
 		if (GameplayManager.Instance.TimeFreeze) {
 			savedForce = dir * forceMagnitude;
 		} else {
-			print (dir * forceMagnitude);
+			//print (dir * forceMagnitude);
 			rigid.AddForce (dir * forceMagnitude, ForceMode.Impulse);
+		}
+
+		//try calculate ghost balls
+		float velo = forceMagnitude / GetMass ();
+		//print ("velo shot calc " + velo);
+		//switchObserver++;
+
+		float grav = Physics.gravity.magnitude;
+
+		Vector3 force = (dir * forceMagnitude);
+		for (float t = 0.5f; t < 6.0f; t += 0.5f) {
+			float yPos = (force.y * t) - (grav * t * t / 2.0f);
+			float xPos = force.x * t;
+			float zPos = force.z * t;
+
+			MeshRenderer mesh = Instantiate (ghostBall, new Vector3 (xPos, yPos, zPos) + transform.position, Quaternion.identity).GetComponent<MeshRenderer> ();
+			mesh.enabled = true;
 		}
 	}
 
