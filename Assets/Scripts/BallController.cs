@@ -30,16 +30,15 @@ public class BallController : MonoBehaviour {
 	 * 3 = z
 	 */
 
-	private int switchObserver = 0;
+	private PowerMeterController powerMeter;
 
-	private GameObject ghostBall;
+	[SerializeField]
+	private GhostController[] ghosts;
 
 	// Use this for initialization
 	private void Start () {
 		rigid = GetComponent<Rigidbody> ();
 		rigid.mass = ballMass;
-
-		ghostBall = GameObject.Find ("Ghost");
 	}
 
 	private void Update () {
@@ -66,6 +65,25 @@ public class BallController : MonoBehaviour {
 			Vector3 oriPos = transform.localPosition + arrowTransform.GetDirection () * arrowTransform.GetArrowLength ();
 
 			arrowTransform.SetTransform (oriPos, oriRot);
+
+			//tampilkan ghost balls
+			float forceMagnitude = powerMeter.GetForce ();
+			float velo = forceMagnitude / GetMass ();
+			float grav = Physics.gravity.magnitude;
+
+			Vector3 force = (arrowTransform.GetDirection () * forceMagnitude);
+			for (int i = 1; i <= 10; i++) {
+				float t = i * 0.5f;
+
+				float yPos = (force.y * t) - (grav * t * t / 2.0f);
+				float xPos = force.x * t;
+				float zPos = force.z * t;
+
+				ghosts[i - 1].SetPosition (new Vector3 (xPos, yPos, zPos) + transform.position);
+				//GhostController ghost = Instantiate (ghostBall, new Vector3 (xPos, yPos, zPos) + transform.position, Quaternion.identity).GetComponent<GhostController> ();
+				ghosts[i - 1].SetActive (true);
+				ghosts[i - 1].SetNumber (i);
+			}
 		}
 	}
 
@@ -97,13 +115,6 @@ public class BallController : MonoBehaviour {
 		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetText (System.Math.Round (length, 2) + " m/s");
 		//DEBUG-COMMENT
 		//CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetVisible (true);
-
-		if (switchObserver == 1) {
-			switchObserver++;
-		} else if (switchObserver == 2) {
-			switchObserver = 0;
-			print ("velo shot observed " + rigid.velocity.magnitude);
-		}
 	}
 
 	public void ChangeShootMode (ShootMode sm) {
@@ -124,11 +135,12 @@ public class BallController : MonoBehaviour {
 	}
 
 	private void LoadState () {
-		rigid.velocity = savedVelo;
-		rigid.angularVelocity = savedAngVelo;
 		rigid.useGravity = true;
 		if (savedForce != Vector3.zero) {
 			rigid.AddForce (savedForce, ForceMode.Impulse);
+		} else {
+			rigid.velocity = savedVelo;
+			rigid.angularVelocity = savedAngVelo;
 		}
 	}
 
@@ -151,21 +163,8 @@ public class BallController : MonoBehaviour {
 			rigid.AddForce (dir * forceMagnitude, ForceMode.Impulse);
 		}
 
-		//try calculate ghost balls
-		float velo = forceMagnitude / GetMass ();
-		//print ("velo shot calc " + velo);
-		//switchObserver++;
-
-		float grav = Physics.gravity.magnitude;
-
-		Vector3 force = (dir * forceMagnitude);
-		for (float t = 0.5f; t < 6.0f; t += 0.5f) {
-			float yPos = (force.y * t) - (grav * t * t / 2.0f);
-			float xPos = force.x * t;
-			float zPos = force.z * t;
-
-			MeshRenderer mesh = Instantiate (ghostBall, new Vector3 (xPos, yPos, zPos) + transform.position, Quaternion.identity).GetComponent<MeshRenderer> ();
-			mesh.enabled = true;
+		foreach (GhostController ghost in ghosts) {
+			ghost.SetActive (false);
 		}
 	}
 
@@ -202,5 +201,9 @@ public class BallController : MonoBehaviour {
 				print ("canvas " + i + " aktif");
 			}
 		}
+	}
+
+	public void SetPowerMeter (PowerMeterController pM) {
+		powerMeter = pM;
 	}
 }

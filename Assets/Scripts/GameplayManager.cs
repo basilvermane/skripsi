@@ -198,7 +198,7 @@ public class GameplayManager : MonoBehaviour {
 		ballPos = new Vector3 (ballPosTemp.x, ballY, ballPosTemp.y);
 		goalPos = new Vector3 (goalPosTemp.x, goalY, goalPosTemp.y);
 		stageBall = Instantiate (ballPrefab, ballPos, Quaternion.identity).GetComponentInChildren<BallController> ();
-		print (stageBall);
+		stageBall.SetPowerMeter (powerControl);
 		CanvasController.Instances[(int) CanvasType.GAME].SetTargetObject (stageBall.transform);
 		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetTargetObject (stageBall.veloArrows[0].transform);
 		CanvasController.Instances[(int) CanvasType.DISTANCE].SetTargetObject (stageBall.goalArrow.transform);

@@ -405,6 +405,7 @@
     <Compile Include="Assets\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\CanvasController.cs" />
     <Compile Include="Assets\Scripts\GameplayManager.cs" />
+    <Compile Include="Assets\Scripts\GhostController.cs" />
     <Compile Include="Assets\Scripts\GoalController.cs" />
     <Compile Include="Assets\Scripts\LevelAnimController.cs" />
     <Compile Include="Assets\Scripts\LevelParameters.cs" />
