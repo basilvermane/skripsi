@@ -10,7 +10,7 @@ public class BallController : MonoBehaviour {
 	public float minPitch = -90.0f;
 	public float maxPitch = 90.0f;
 
-	public float ballMass = 1.0f;
+	private float ballMass = 1.0f;
 
 	public float arrowLengthModifier = 0.2f;
 
@@ -35,6 +35,9 @@ public class BallController : MonoBehaviour {
 	[SerializeField]
 	private GhostController[] ghosts;
 
+	private bool switchSetMass = false;
+	private float savedMass;
+
 	// Use this for initialization
 	private void Start () {
 		rigid = GetComponent<Rigidbody> ();
@@ -42,6 +45,14 @@ public class BallController : MonoBehaviour {
 	}
 
 	private void Update () {
+		//delayed initialization
+		if (switchSetMass) {
+			if (rigid != null) {
+				rigid.mass = savedMass;
+				switchSetMass = false;
+			}
+		}
+
 		//input
 		if (GameplayManager.Instance.ShootMode == ShootMode.AIM) {
 			//print ("shootmode");
@@ -83,6 +94,11 @@ public class BallController : MonoBehaviour {
 				//GhostController ghost = Instantiate (ghostBall, new Vector3 (xPos, yPos, zPos) + transform.position, Quaternion.identity).GetComponent<GhostController> ();
 				ghosts[i - 1].SetActive (true);
 				ghosts[i - 1].SetNumber (i);
+			}
+
+			if (GameplayManager.Instance.PhysicsVision) {
+				//tampilkan besaran fisika
+				
 			}
 		}
 	}
@@ -169,7 +185,20 @@ public class BallController : MonoBehaviour {
 	}
 
 	public float GetMass () {
-		return rigid.mass;
+		if (rigid != null) {
+			return rigid.mass;
+		} else {
+			return -1.0f;
+		}
+	}
+
+	public void SetMass (float m) {
+		if (rigid != null)
+			rigid.mass = m;
+		else {
+			switchSetMass = true;
+			savedMass = m;
+		}
 	}
 
 	public float GetSpeedMagnitude () {

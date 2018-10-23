@@ -24,24 +24,27 @@ public class SandBoxCanvasController : MonoBehaviour {
 	 * 1 = map length
 	 * 2 = map width
 	 * 3 = max height
-	 * 4 = apply
-	 * 5 = back
-	 * 6 = inside gravity
-	 * 7 = inside map length
-	 * 8 = inside map width
-	 * 9 = inside max height
+	 * 4 = ball mass
+	 * 5 = apply
+	 * 6 = back
+	 * 7 = inside gravity
+	 * 8 = inside map length
+	 * 9 = inside map width
+	 * 10 = inside max height
+	 * 11 = inside ball mass
 	 */
 
 	public float maxInputCooldown = 0.5f;
 	private float inputCooldown;
 	public float sliderPercentage = 0.5f;
 
-	public Slider gravSlider, widthSlider, lengthSlider, heightSlider;
+	public Slider gravSlider, widthSlider, lengthSlider, heightSlider, massSlider;
 
 	private float gravMin, gravMax;
 	private int widthMin, widthMax;
 	private int lengthMin, lengthMax;
 	private int heightMin, heightMax;
+	private float massMin, massMax;
 
 	public float scrollSpeedF = 1f;
 	private int scrollSpeedI;
@@ -73,14 +76,16 @@ public class SandBoxCanvasController : MonoBehaviour {
 
 		gravMin = gravSlider.minValue;
 		gravMax = gravSlider.maxValue;
-		widthMin = (int) widthSlider.minValue;
-		widthMax = (int) widthSlider.maxValue;
-		heightMin = (int) heightSlider.minValue;
-		heightMax = (int) heightSlider.maxValue;
-		lengthMin = (int) lengthSlider.minValue;
-		lengthMax = (int) lengthSlider.maxValue;
+		widthMin = Mathf.RoundToInt (widthSlider.minValue);
+		widthMax = Mathf.RoundToInt (widthSlider.maxValue);
+		heightMin = Mathf.RoundToInt (heightSlider.minValue);
+		heightMax = Mathf.RoundToInt (heightSlider.maxValue);
+		lengthMin = Mathf.RoundToInt (lengthSlider.minValue);
+		lengthMax = Mathf.RoundToInt (lengthSlider.maxValue);
+		massMin = massSlider.minValue;
+		massMax = massSlider.maxValue;
 
-		scrollSpeedI = (int) scrollSpeedF;
+		scrollSpeedI = Mathf.RoundToInt (scrollSpeedF);
 	}
 
 	public void SetPlayer (Transform p) {
@@ -107,27 +112,28 @@ public class SandBoxCanvasController : MonoBehaviour {
 			mouseX = Input.GetAxis ("Horizontal") + Input.GetAxis ("Horr");
 			mouseY = Input.GetAxis ("Vertical") + Input.GetAxis ("Verr");
 
-			if (mouseY < -0.1f) { //atas
+			if (mouseY < -0.1f) { //bawah
 				switch (menu) {
 					case 0:
 					case 1:
 					case 2:
 					case 3:
-					case 4: {
+					case 4:
+					case 5: {
 							menu++;
 							inputCooldown = maxInputCooldown;
 						}
 						break;
-					case 5: {
+					case 6: {
 							menu = 0;
 							inputCooldown = maxInputCooldown;
 						}
 						break;
 				}
-			} else if (mouseY > 0.1f) { //bawah
+			} else if (mouseY > 0.1f) { //atas
 				switch (menu) {
 					case 0: {
-							menu = 5;
+							menu = 6;
 							inputCooldown = maxInputCooldown;
 						}
 						break;
@@ -135,7 +141,8 @@ public class SandBoxCanvasController : MonoBehaviour {
 					case 2:
 					case 3:
 					case 4:
-					case 5: {
+					case 5:
+					case 6: {
 							menu--;
 							inputCooldown = maxInputCooldown;
 						}
@@ -146,26 +153,30 @@ public class SandBoxCanvasController : MonoBehaviour {
 			if (Input.GetButtonDown ("Jump") || Input.GetKeyDown (KeyCode.RightShift)) { //select
 				switch (menu) {
 					case 0: {
-							menu = 6;
-						}
-						break;
-					case 1: {
 							menu = 7;
 						}
 						break;
-					case 2: {
+					case 1: {
 							menu = 8;
 						}
 						break;
-					case 3: {
+					case 2: {
 							menu = 9;
 						}
 						break;
+					case 3: {
+							menu = 10;
+						}
+						break;
 					case 4: {
-							ApplyChanges ();
+							menu = 11;
 						}
 						break;
 					case 5: {
+							ApplyChanges ();
+						}
+						break;
+					case 6: {
 							HideCanvas ();
 						}
 						break;
@@ -174,77 +185,92 @@ public class SandBoxCanvasController : MonoBehaviour {
 
 			if (Input.GetButtonDown ("Jump2") || Input.GetKeyDown (KeyCode.LeftShift)) { //back
 				switch (menu) {
-					case 6: {
+					case 7: {
 							menu = 0;
 						}
 						break;
-					case 7: {
+					case 8: {
 							menu = 1;
 						}
 						break;
-					case 8: {
+					case 9: {
 							menu = 2;
 						}
 						break;
-					case 9: {
+					case 10: {
 							menu = 3;
+						}
+						break;
+					case 11: {
+							menu = 4;
 						}
 						break;
 					case 0:
 					case 1:
 					case 2:
 					case 3:
-					case 4: {
-							menu = 5;
+					case 4:
+					case 5: {
+							menu = 6;
 						}
 						break;
 				}
 			}
 
-			if (menu >= 6 && menu <= 9) {
+			if (menu >= 7 && menu <= 11) {
 				if (mouseX > 0.1f) { //kanan
 					switch (menu) {
-						case 6: {
-								float change = (gravMax - gravMin) * (scrollSpeedF / 100.0f);
-								gravSlider.value += change;
-							}
-							break;
 						case 7: {
-								int change = (lengthMax - lengthMin) * scrollSpeedI / 100;
-								lengthSlider.value += change;
+								float change = (gravMax - gravMin) * (scrollSpeedF / 100.0f);
+								gravSlider.value = Mathf.Clamp (gravSlider.value + change, gravMin, gravMax);
 							}
 							break;
 						case 8: {
-								int change = (widthMax - widthMin) * scrollSpeedI / 100;
-								widthSlider.value += change;
+								int change = (lengthMax - lengthMin) * scrollSpeedI / 100;
+								lengthSlider.value = Mathf.Clamp (lengthSlider.value + change, lengthMin, lengthMax);
 							}
 							break;
 						case 9: {
+								int change = (widthMax - widthMin) * scrollSpeedI / 100;
+								widthSlider.value = Mathf.Clamp (widthSlider.value + change, widthMin, widthMax);
+							}
+							break;
+						case 10: {
 								int change = (heightMax - heightMin) * scrollSpeedI / 100;
-								heightSlider.value += change;
+								heightSlider.value = Mathf.Clamp (heightSlider.value + change, heightMin, heightMax);
+							}
+							break;
+						case 11: {
+								float change = (massMax - massMin) * (scrollSpeedF / 100.0f);
+								massSlider.value = Mathf.Clamp (massSlider.value + change, massMin, massMax);
 							}
 							break;
 					}
 				} else if (mouseX < -0.1f) { //kiri
 					switch (menu) {
-						case 6: {
-								float change = (gravMax - gravMin) * (scrollSpeedF / 100.0f);
-								gravSlider.value -= change;
-							}
-							break;
 						case 7: {
-								int change = (lengthMax - lengthMin) * scrollSpeedI / 100;
-								lengthSlider.value -= change;
+								float change = (gravMax - gravMin) * (scrollSpeedF / 100.0f);
+								gravSlider.value = Mathf.Clamp (gravSlider.value - change, gravMin, gravMax);
 							}
 							break;
 						case 8: {
-								int change = (widthMax - widthMin) * scrollSpeedI / 100;
-								widthSlider.value -= change;
+								int change = (lengthMax - lengthMin) * scrollSpeedI / 100;
+								lengthSlider.value = Mathf.Clamp (lengthSlider.value - change, lengthMin, lengthMax);
 							}
 							break;
 						case 9: {
+								int change = (widthMax - widthMin) * scrollSpeedI / 100;
+								widthSlider.value = Mathf.Clamp (widthSlider.value - change, widthMin, widthMax);
+							}
+							break;
+						case 10: {
 								int change = (heightMax - heightMin) * scrollSpeedI / 100;
-								heightSlider.value -= change;
+								heightSlider.value = Mathf.Clamp (heightSlider.value - change, heightMin, heightMax);
+							}
+							break;
+						case 11: {
+								float change = (massMax - massMin) * (scrollSpeedF / 100.0f);
+								massSlider.value = Mathf.Clamp (massSlider.value - change, massMin, massMax);
 							}
 							break;
 					}
@@ -253,7 +279,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 		}
 
 		anim.SetBool ("show", menu >= 0);
-		anim.SetFloat ("menu", (menu * 1.0f) / 10.0f);
+		anim.SetFloat ("menu", (menu * 1.0f) / 20.0f);
 	}
 
 	public void ApplyChanges () {
@@ -261,7 +287,8 @@ public class SandBoxCanvasController : MonoBehaviour {
 		int mapLength = (int) lengthSlider.value;
 		int mapWidth = (int) widthSlider.value;
 		int mapHeight = (int) heightSlider.value * 100;
-		GameplayManager.Instance.SandboxChange (grav, mapLength, mapWidth, mapHeight);
+		float mass = massSlider.value;
+		GameplayManager.Instance.SandboxChange (grav, mapLength, mapWidth, mapHeight, mass);
 		HideCanvas ();
 	}
 
@@ -273,7 +300,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 		}
 	}
 
-	public void ShowCanvas (float grav, int length, int width, int height) {
+	public void ShowCanvas (float grav, int length, int width, int height, float mass) {
 		if (menu < 0) {
 			menu = 0;
 			PlaceCanvas ();
@@ -284,6 +311,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 			lengthSlider.value = length;
 			widthSlider.value = width;
 			heightSlider.value = height;
+			massSlider.value = mass;
 		}
 	}
 

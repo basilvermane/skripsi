@@ -87,7 +87,7 @@ public class GameplayManager : MonoBehaviour {
 
 	private CameraController player;
 
-	public void SandboxChange (float grav, int mapLength, int mapWidth, int mapHeight) {
+	public void SandboxChange (float grav, int mapLength, int mapWidth, int mapHeight, float mass) {
 		if (!isSandbox) return;
 
 		//persiapan loading
@@ -95,10 +95,10 @@ public class GameplayManager : MonoBehaviour {
 		timeFreeze = true;
 		stageBall.TimeFreeze (true);
 
-		StartCoroutine (SandboxRoutine (grav, mapLength, mapWidth, mapHeight));
+		StartCoroutine (SandboxRoutine (grav, mapLength, mapWidth, mapHeight, mass));
 	}
 	
-	private IEnumerator SandboxRoutine (float grav, int mapLength, int mapWidth, int mapHeight) {
+	private IEnumerator SandboxRoutine (float grav, int mapLength, int mapWidth, int mapHeight, float mass) {
 		//generate terrain baru
 		perlin.GenerateNewNoise (mapLength, mapWidth, mapHeight, false);
 		Physics.gravity = Vector3.down * grav;
@@ -119,6 +119,7 @@ public class GameplayManager : MonoBehaviour {
 		ballPos = new Vector3 (ballPosTemp.x, ballY + 10.0f, ballPosTemp.y);
 		goalPos = new Vector3 (goalPosTemp.x, goalY + 10.0f, goalPosTemp.y);
 		stageBall.SetPosition (ballPos);
+		stageBall.SetMass (mass);
 		stageGoal.position = goalPos;
 
 		//tempatkan player
@@ -199,6 +200,7 @@ public class GameplayManager : MonoBehaviour {
 		goalPos = new Vector3 (goalPosTemp.x, goalY, goalPosTemp.y);
 		stageBall = Instantiate (ballPrefab, ballPos, Quaternion.identity).GetComponentInChildren<BallController> ();
 		stageBall.SetPowerMeter (powerControl);
+		stageBall.SetMass (currentLevel.BallMass);
 		CanvasController.Instances[(int) CanvasType.GAME].SetTargetObject (stageBall.transform);
 		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetTargetObject (stageBall.veloArrows[0].transform);
 		CanvasController.Instances[(int) CanvasType.DISTANCE].SetTargetObject (stageBall.goalArrow.transform);
@@ -229,7 +231,7 @@ public class GameplayManager : MonoBehaviour {
 		if ((Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.X)) && isSandbox && shootMode == ShootMode.IDLE) {
 			perlin.HideTerrain ();
 			SandBoxCanvasController.instance.SetPlayer (player.transform);
-			SandBoxCanvasController.instance.ShowCanvas (Physics.gravity.y, perlin.TLength, perlin.TWidth, perlin.THeight);
+			SandBoxCanvasController.instance.ShowCanvas (Physics.gravity.y, perlin.TLength, perlin.TWidth, perlin.THeight, stageBall.GetMass ());
 		}
 
 		//time freeze
