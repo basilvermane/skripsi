@@ -218,6 +218,10 @@ public class GameplayManager : MonoBehaviour {
 			return;
 		}
 
+		if (SandBoxCanvasController.instance.IsActive) {
+			return;
+		}
+
 		//testing
 		/*if (Input.GetKeyDown(KeyCode.U)) {
 			StartCoroutine (LoadingManager.Instance.LoadPuzzle (0));
@@ -229,7 +233,6 @@ public class GameplayManager : MonoBehaviour {
 		//input
 		//masuk sandbox canvas
 		if ((Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.X)) && isSandbox && shootMode == ShootMode.IDLE) {
-			perlin.HideTerrain ();
 			SandBoxCanvasController.instance.SetPlayer (player.transform);
 			SandBoxCanvasController.instance.ShowCanvas (Physics.gravity.y, perlin.TLength, perlin.TWidth, perlin.THeight, stageBall.GetMass ());
 		}
@@ -277,14 +280,12 @@ public class GameplayManager : MonoBehaviour {
 		shootMode = mode;
 		switch (shootMode) {
 			case ShootMode.IDLE: {
-					print ("deactivate canvas");
 					powerControl.Deactivate ();
 					CanvasController.Instances[(int) CanvasType.GAME].SetVisible (false);
 				}
 				break;
 			case ShootMode.AIM:
 			case ShootMode.POWER: {
-					print ("activate canvas");
 					CanvasController.Instances[(int) CanvasType.GAME].SetVisible (true);
 					powerControl.Activate ();
 				} break;
@@ -337,5 +338,19 @@ public class GameplayManager : MonoBehaviour {
 
 	public void ShowPlaceholderText (string text) {
 		testText.text = text;
+	}
+
+	public void FreezeBall (bool f) {
+		stageBall.TimeFreeze (TimeFreeze, true, f);
+
+		if (f) {
+			perlin.HideTerrain ();
+			stageBall.gameObject.SetActive (false);
+			stageGoal.gameObject.SetActive (false);
+		} else {
+			perlin.ShowTerrain ();
+			stageBall.gameObject.SetActive (true);
+			stageGoal.gameObject.SetActive (true);
+		}
 	}
 }

@@ -13,7 +13,7 @@ public class BallController : MonoBehaviour {
 	private float ballMass = 1.0f;
 
 	public float arrowLengthModifier = 0.2f;
-
+	
 	private Rigidbody rigid;
 
 	private Vector3 savedVelo, savedAngVelo;
@@ -141,10 +141,12 @@ public class BallController : MonoBehaviour {
 		}
 	}
 
-	private void SaveState () {
-		savedVelo = rigid.velocity;
-		savedAngVelo = rigid.angularVelocity;
-		savedForce = Vector3.zero;
+	private void SaveState (bool overwriteState) {
+		if (overwriteState) {
+			savedVelo = rigid.velocity;
+			savedAngVelo = rigid.angularVelocity;
+			savedForce = Vector3.zero;
+		}
 		rigid.useGravity = false;
 		rigid.velocity = new Vector3 (0.0f, 0.0f, 0.0f);
 		rigid.angularVelocity = new Vector3 (0.0f, 0.0f, 0.0f);
@@ -160,11 +162,27 @@ public class BallController : MonoBehaviour {
 		}
 	}
 
-	public void TimeFreeze (bool tf) {
-		if (tf) {
-			SaveState ();
+	public void TimeFreeze (bool tf, bool fromSandBox = false, bool sbState = false) {
+		if (fromSandBox) {
+			//dari sandbox canvas
+			if (tf) {
+				if (sbState) {
+					SaveState (false);
+				}
+			} else {
+				if (sbState) {
+					SaveState (true);
+				} else {
+					LoadState ();
+				}
+			}
 		} else {
-			LoadState ();
+			//dari timefreeze
+			if (tf) {
+				SaveState (true);
+			} else {
+				LoadState ();
+			}
 		}
 	}
 

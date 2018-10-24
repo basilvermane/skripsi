@@ -60,12 +60,6 @@ public class SandBoxCanvasController : MonoBehaviour {
 		}
 	}
 
-	public bool Shown {
-		get {
-			return menu >= 0;
-		}
-	}
-
 	// Use this for initialization
 	private void Start () {
 		hideTrigger = false;
@@ -297,6 +291,8 @@ public class SandBoxCanvasController : MonoBehaviour {
 			menu = -1;
 			anim.SetBool ("show", false);
 			hideTrigger = true;
+
+			GameplayManager.Instance.FreezeBall (false);
 		}
 	}
 
@@ -312,6 +308,8 @@ public class SandBoxCanvasController : MonoBehaviour {
 			widthSlider.value = width;
 			heightSlider.value = height;
 			massSlider.value = mass;
+
+			GameplayManager.Instance.FreezeBall (true);
 		}
 	}
 
