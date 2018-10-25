@@ -153,8 +153,9 @@ public class CanvasController : MonoBehaviour {
 			targetCamera = Camera.main;
 			GetComponent<Canvas> ().worldCamera = Camera.main;
 			canvas.enabled = true;
-		} else {
+		} else if (scene.name.Equals ("menu")) {
 			targetCamera = null;
+			SetCanvasVisible (false);
 			if (canvas != null) canvas.enabled = false;
 		}
 	}

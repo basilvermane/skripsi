@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 [RequireComponent (typeof (Animator))]
 [RequireComponent (typeof (Canvas))]
@@ -43,7 +44,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 	private float gravMin, gravMax;
 	private int widthMin, widthMax;
 	private int lengthMin, lengthMax;
-	private int heightMin, heightMax;
+	private float heightMin, heightMax;
 	private float massMin, massMax;
 
 	public float scrollSpeedF = 1f;
@@ -72,10 +73,10 @@ public class SandBoxCanvasController : MonoBehaviour {
 		gravMax = gravSlider.maxValue;
 		widthMin = Mathf.RoundToInt (widthSlider.minValue);
 		widthMax = Mathf.RoundToInt (widthSlider.maxValue);
-		heightMin = Mathf.RoundToInt (heightSlider.minValue);
-		heightMax = Mathf.RoundToInt (heightSlider.maxValue);
 		lengthMin = Mathf.RoundToInt (lengthSlider.minValue);
 		lengthMax = Mathf.RoundToInt (lengthSlider.maxValue);
+		heightMin = heightSlider.minValue;
+		heightMax = heightSlider.maxValue;
 		massMin = massSlider.minValue;
 		massMax = massSlider.maxValue;
 
@@ -174,6 +175,26 @@ public class SandBoxCanvasController : MonoBehaviour {
 							HideCanvas ();
 						}
 						break;
+					case 7: {
+							menu = 0;
+						}
+						break;
+					case 8: {
+							menu = 1;
+						}
+						break;
+					case 9: {
+							menu = 2;
+						}
+						break;
+					case 10: {
+							menu = 3;
+						}
+						break;
+					case 11: {
+							menu = 4;
+						}
+						break;
 				}
 			}
 
@@ -230,7 +251,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 							}
 							break;
 						case 10: {
-								int change = (heightMax - heightMin) * scrollSpeedI / 100;
+								float change = (heightMax - heightMin) * scrollSpeedF / 100;
 								heightSlider.value = Mathf.Clamp (heightSlider.value + change, heightMin, heightMax);
 							}
 							break;
@@ -258,7 +279,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 							}
 							break;
 						case 10: {
-								int change = (heightMax - heightMin) * scrollSpeedI / 100;
+								float change = (heightMax - heightMin) * scrollSpeedF / 100;
 								heightSlider.value = Mathf.Clamp (heightSlider.value - change, heightMin, heightMax);
 							}
 							break;
@@ -329,6 +350,16 @@ public class SandBoxCanvasController : MonoBehaviour {
 	public bool IsActive {
 		get {
 			return menu >= 0;
+		}
+	}
+
+	private void OnEnable () {
+		SceneManager.sceneLoaded += SceneLoadCheck;
+	}
+
+	private void SceneLoadCheck (Scene scene, LoadSceneMode mode) {
+		if (scene.name.Equals ("menu")) {
+			HideCanvas ();
 		}
 	}
 }
