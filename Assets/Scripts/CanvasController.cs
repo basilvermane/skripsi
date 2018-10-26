@@ -75,6 +75,7 @@ public class CanvasController : MonoBehaviour {
 	}
 
 	public void SetCanvasVisible (bool visible) {
+		if (canvas == null) return;
 		canvas.enabled = visible;
 	}
 
@@ -90,8 +91,8 @@ public class CanvasController : MonoBehaviour {
 	}
 
 	//set value
-	public void SetVisible (bool visible) {
-		if (targetObject == null || !canvas.enabled) return;
+	public void SetVisible (bool visible, bool forceSet = false) {
+		if ((targetObject == null || !canvas.enabled) && !forceSet) return;
 		statusVisible = visible;
 		//print ("inside setvisible");
 		foreach (GameObject ui in targetUI) {
@@ -155,8 +156,8 @@ public class CanvasController : MonoBehaviour {
 			canvas.enabled = true;
 		} else if (scene.name.Equals ("menu")) {
 			targetCamera = null;
+			SetVisible (false, true);
 			SetCanvasVisible (false);
-			if (canvas != null) canvas.enabled = false;
 		}
 	}
 

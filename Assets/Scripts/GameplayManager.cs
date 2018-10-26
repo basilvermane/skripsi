@@ -20,6 +20,8 @@ public class GameplayManager : MonoBehaviour {
 		}
 	}
 
+	private bool inMenu = true;
+
 	private void OnEnable () {
 		SceneManager.sceneLoaded += SceneLoadCheck;
 	}
@@ -27,10 +29,21 @@ public class GameplayManager : MonoBehaviour {
 	private void SceneLoadCheck (Scene scene, LoadSceneMode mode) {
 		if (scene.name.Equals ("main") && PlayerPrefs.HasKey ("level")) {
 			StartNewStage (PlayerPrefs.GetInt ("level"));
+
+			inMenu = false;
 		} else if (scene.name.Equals("menu") && LoadingManager.Instance != null) {
 			LoadingManager.Instance.SetLoadingWall (false);
 			LoadingManager.Instance.SetWinWall (false);
+
+			inMenu = true;
+			ResetAll ();
 		}
+	}
+
+	private void ResetAll () {
+		timeFreeze = false;
+		physicsVision = false;
+		shootMode = ShootMode.IDLE;
 	}
 
 	private void Awake () {
@@ -222,13 +235,9 @@ public class GameplayManager : MonoBehaviour {
 			return;
 		}
 
-		//testing
-		/*if (Input.GetKeyDown(KeyCode.U)) {
-			StartCoroutine (LoadingManager.Instance.LoadPuzzle (0));
+		if (inMenu) {
+			return;
 		}
-		if (Input.GetKeyDown(KeyCode.I)) {
-			StartCoroutine (LoadingManager.Instance.LoadPuzzle (1));
-		}*/
 
 		//input
 		//masuk sandbox canvas
@@ -324,8 +333,10 @@ public class GameplayManager : MonoBehaviour {
 	}*/
 
 	public void FinishGame () {
+		ResetAll ();
+
 		//placeholder
-		ShowPlaceholderText ("Game finished!");
+		//ShowPlaceholderText ("Game finished!");
 
 		//hide everything else
 		perlin.HideTerrain ();

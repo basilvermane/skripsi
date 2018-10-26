@@ -308,6 +308,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 	}
 
 	public void HideCanvas () {
+		if (anim == null) return;
 		if (menu >= 0) {
 			menu = -1;
 			anim.SetBool ("show", false);

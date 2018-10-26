@@ -2,6 +2,7 @@
 using System.Collections;
 
 public class BallController : MonoBehaviour {
+	private const float TIMESTEP = 0.02f;
 
 	public ArrowController arrowTransform;
 	private float yaw = 0.0f, pitch = 0.0f;
@@ -98,7 +99,11 @@ public class BallController : MonoBehaviour {
 
 			if (GameplayManager.Instance.PhysicsVision) {
 				//tampilkan besaran fisika
-				
+				float forceN = forceMagnitude / TIMESTEP;
+
+				CanvasController.Instances[(int) CanvasType.GAME].SetText (System.Math.Round(forceN, 2) + " N");
+			} else {
+				CanvasController.Instances[(int) CanvasType.GAME].SetText ("");
 			}
 		}
 	}
