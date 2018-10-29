@@ -337,6 +337,7 @@ public class SandBoxCanvasController : MonoBehaviour {
 
 	private void PlaceCanvas () {
 		//kalkulasi target di world position
+		//DEBUG-COMMENT
 		Vector3 playerFwdTemp = player.forward;
 		float yRot = player.eulerAngles.y;
 		Vector3 playerFwd = Quaternion.AngleAxis (yRot, Vector3.up) * Vector3.forward;

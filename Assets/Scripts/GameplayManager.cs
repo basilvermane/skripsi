@@ -44,6 +44,7 @@ public class GameplayManager : MonoBehaviour {
 		timeFreeze = false;
 		physicsVision = false;
 		shootMode = ShootMode.IDLE;
+		pvFrameCount = 0;
 	}
 
 	private void Awake () {
@@ -100,6 +101,9 @@ public class GameplayManager : MonoBehaviour {
 
 	private CameraController player;
 
+	private int pvFrameCount;
+	public int pvFrameThreshold = 30;
+
 	public void SandboxChange (float grav, int mapLength, int mapWidth, int mapHeight, float mass) {
 		if (!isSandbox) return;
 
@@ -151,6 +155,8 @@ public class GameplayManager : MonoBehaviour {
 	}
 
 	public void StartNewStage (int level) {
+		pvFrameCount = 0;
+
 		//nonaktifkan loading
 		LoadingManager.Instance.SetLoadingWall (false);
 		LoadingManager.Instance.SetWinWall (false);
@@ -224,6 +230,9 @@ public class GameplayManager : MonoBehaviour {
 		Vector3 playerPos = stageBall.transform.position - (player.getForward () * startingDist);
 		//playerPos.y = perlin.GetCurrentHeightAt (playerPos.x, playerPos.z) + 10.0f;
 		player.Teleport (playerPos);
+		CalculationManager.Instance.SetCamera (player);
+		CalculationManager.Instance.SetBall (stageBall);
+		CalculationManager.Instance.SetGoal (stageGoal);
 	}
 
 	private void Update () {
@@ -253,9 +262,25 @@ public class GameplayManager : MonoBehaviour {
 		}
 
 		//physics vision
-		if (Input.GetButtonDown ("PhysicsVision") || Input.GetKeyDown (KeyCode.JoystickButton1)) {
-			physicsVision = !physicsVision;
-			stageBall.TogglePhysicsVision (physicsVision);
+		if (Input.GetButtonUp ("PhysicsVision") || Input.GetKeyUp (KeyCode.JoystickButton1)) {
+			if (pvFrameCount < pvFrameThreshold) {
+				//single press - toggle physics vision
+				physicsVision = !physicsVision;
+				stageBall.TogglePhysicsVision (physicsVision);
+			} else {
+				//held, released - deactivate calculation panel
+				CalculationManager.Instance.Show (false);
+			}
+
+			pvFrameCount = 0;
+		} else if (Input.GetButton ("PhysicsVision") || Input.GetKey (KeyCode.JoystickButton1)) {
+			if (pvFrameCount < pvFrameThreshold) {
+				//held, start counting frames
+				pvFrameCount++;
+			} else {
+				//held, show calculation panel
+				CalculationManager.Instance.Show (true);
+			}
 		}
 
 		//ganti shoot mode

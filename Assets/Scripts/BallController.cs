@@ -108,6 +108,34 @@ public class BallController : MonoBehaviour {
 		}
 	}
 
+	public float GetForce () {
+		if (GameplayManager.Instance.ShootMode != ShootMode.AIM) {
+			return 0.0f;
+		}
+
+		float forceMagnitude = powerMeter.GetForce ();
+		float velo = forceMagnitude / GetMass ();
+		float grav = Physics.gravity.magnitude;
+		float forceN = forceMagnitude / TIMESTEP;
+
+		return forceN;
+	}
+
+	public float GetContactTime () {
+		return TIMESTEP;
+	}
+	
+	public float GetImpulse () {
+		return powerMeter.GetForce ();
+	}
+
+	public float GetAngle () {
+		Vector3 arrowV = arrowTransform.transform.up;
+		Vector3 horizontalV = arrowV;
+		horizontalV.y = 0.0f;
+		return Vector3.Angle (horizontalV, arrowV);
+	}
+
 	public void SetGoalArrow (Vector3 goalPos) {
 		Vector3 distVector = (goalPos - transform.position);
 		float distance = distVector.magnitude;

@@ -28,6 +28,7 @@ public class PowerMeterController : MonoBehaviour {
 
 	public void Deactivate () {
 		active = false;
+		currentForce = 0.0f;
 	}
 
 	private void Update () {
