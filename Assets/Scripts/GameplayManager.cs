@@ -104,6 +104,9 @@ public class GameplayManager : MonoBehaviour {
 	private int pvFrameCount;
 	public int pvFrameThreshold = 30;
 
+	private int tfFrameCount;
+	public int tfFrameThreshold = 30;
+
 	public void SandboxChange (float grav, int mapLength, int mapWidth, int mapHeight, float mass) {
 		if (!isSandbox) return;
 
@@ -156,6 +159,7 @@ public class GameplayManager : MonoBehaviour {
 
 	public void StartNewStage (int level) {
 		pvFrameCount = 0;
+		tfFrameCount = 0;
 
 		//nonaktifkan loading
 		LoadingManager.Instance.SetLoadingWall (false);
@@ -251,14 +255,31 @@ public class GameplayManager : MonoBehaviour {
 		//input
 		//masuk sandbox canvas
 		if ((Input.GetButtonDown("Cancel") || Input.GetKeyDown(KeyCode.X)) && isSandbox && shootMode == ShootMode.IDLE) {
-			SandBoxCanvasController.instance.SetPlayer (player.transform);
-			SandBoxCanvasController.instance.ShowCanvas (Physics.gravity.y, perlin.TLength, perlin.TWidth, perlin.THeight, stageBall.GetMass ());
+			if (!FormulaCanvasController.GameInstance.IsShown) {
+				SandBoxCanvasController.instance.SetPlayer (player.transform);
+				SandBoxCanvasController.instance.ShowCanvas (Physics.gravity.y, perlin.TLength, perlin.TWidth, perlin.THeight, stageBall.GetMass ());
+			}
 		}
 
 		//time freeze
-		if (Input.GetButtonDown ("TimeFreeze") || Input.GetKeyDown (KeyCode.JoystickButton2)) {
-			timeFreeze = !timeFreeze;
-			stageBall.TimeFreeze (timeFreeze);
+		if (Input.GetButtonUp ("TimeFreeze") || Input.GetKeyUp (KeyCode.JoystickButton2)) {
+			if (tfFrameCount < tfFrameThreshold) {
+				//single press - toggle time freeze
+				timeFreeze = !timeFreeze;
+				stageBall.TimeFreeze (timeFreeze);
+			} else {
+				//held, released - deactivate formula canvas
+				FormulaCanvasController.GameInstance.SetVisible (false);
+			}
+		} else if (Input.GetButton ("TimeFreeze") || Input.GetKey (KeyCode.JoystickButton2)) {
+			if (tfFrameCount < tfFrameThreshold) {
+				//held, start counting frames
+				tfFrameCount++;
+			} else {
+				//held, show formula canvas
+				FormulaCanvasController.GameInstance.SetPlayer (player.transform);
+				FormulaCanvasController.GameInstance.SetVisible (true);
+			}
 		}
 
 		//physics vision
@@ -299,8 +320,10 @@ public class GameplayManager : MonoBehaviour {
 		}
 
 		if (Input.GetButtonDown ("Cancel") || Input.GetKeyDown (KeyCode.JoystickButton3)) {
-			if (shootMode == ShootMode.AIM) ChangeShootMode (ShootMode.IDLE);
-			else if (shootMode == ShootMode.POWER) ChangeShootMode (ShootMode.IDLE);
+			if (!FormulaCanvasController.GameInstance.IsShown) {
+				if (shootMode == ShootMode.AIM) ChangeShootMode (ShootMode.IDLE);
+				else if (shootMode == ShootMode.POWER) ChangeShootMode (ShootMode.IDLE);
+			}
 		}
 	}
 
