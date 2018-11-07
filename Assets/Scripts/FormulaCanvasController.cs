@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement;
+using UnityEngine.XR;
 
 [RequireComponent (typeof (Animator))]
 public class FormulaCanvasController : MonoBehaviour {
@@ -80,9 +81,10 @@ public class FormulaCanvasController : MonoBehaviour {
 	private void Update () {
 		if (isShown) {
 			if (!isMainInstance) {
+				//DEBUG-UNCOMMENT
+				float yRot = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;
 				//DEBUG-COMMENT
-				Vector3 playerFwdTemp = player.forward;
-				float yRot = player.eulerAngles.y;
+				//float yRot = player.eulerAngles.y;
 				Vector3 playerFwd = Quaternion.AngleAxis (yRot, Vector3.up) * Vector3.forward;
 				Vector3 pos = player.position + (playerFwd * distanceFromCam);
 

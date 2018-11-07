@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using UnityEngine.XR;
 
 public class CalculationManager : MonoBehaviour {
 
@@ -58,14 +59,10 @@ public class CalculationManager : MonoBehaviour {
 
 	private void Update () {
 		if (isShown) {
-			//position
 			//DEBUG-UNCOMMENT
-			//transform.position = targetCam.transform.position + targetCam.getForward ();
-			//transform.LookAt (targetCam.transform.position);
-			//transform.Rotate (0.0f, 180.0f, 0.0f);
-
-			Vector3 playerFwdTemp = targetCam.transform.forward;
-			float yRot = targetCam.transform.eulerAngles.y;
+			float yRot = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;
+			//DEBUG-COMMENT
+			//float yRot = targetCam.transform.eulerAngles.y;
 			Vector3 playerFwd = Quaternion.AngleAxis (yRot, Vector3.up) * Vector3.forward;
 			Vector3 pos = targetCam.transform.position + (playerFwd * distanceFromCam);
 

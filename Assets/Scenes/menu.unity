@@ -9806,6 +9806,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isMainInstance: 1
+  distanceFromCam: 0.5
 --- !u!114 &1885686393
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -47,9 +47,9 @@ public class CameraController : MonoBehaviour {
 
 			//ambil arah kamera, hanya x dan z
 			//DEBUG-UNCOMMENT
-			//float eulerY = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;
+			float eulerY = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;
 			//DEBUG-COMMENT
-			float eulerY = transform.eulerAngles.y;
+			//float eulerY = transform.eulerAngles.y;
 
 			//hover atau jatuh
 			float yMove = 0.0f;

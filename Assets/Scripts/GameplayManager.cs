@@ -271,6 +271,8 @@ public class GameplayManager : MonoBehaviour {
 				//held, released - deactivate formula canvas
 				FormulaCanvasController.GameInstance.SetVisible (false);
 			}
+
+			tfFrameCount = 0;
 		} else if (Input.GetButton ("TimeFreeze") || Input.GetKey (KeyCode.JoystickButton2)) {
 			if (tfFrameCount < tfFrameThreshold) {
 				//held, start counting frames
