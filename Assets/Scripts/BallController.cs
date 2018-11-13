@@ -7,7 +7,7 @@ public class BallController : MonoBehaviour {
 	public ArrowController arrowTransform;
 	private float yaw = 0.0f, pitch = 0.0f;
 	private Vector3 currentRot;
-	public float mouseSensitivity = 10.0f;
+	public float mouseSensitivity = 1.0f;
 	public float minPitch = -90.0f;
 	public float maxPitch = 90.0f;
 
@@ -21,9 +21,9 @@ public class BallController : MonoBehaviour {
 	//private float savedGravity;
 	private Vector3 savedForce;
 
-	public ArrowController gravArrow;
-	public ArrowController[] forceArrows;
-	public ArrowController[] veloArrows;
+	//public ArrowController gravArrow;
+	//public ArrowController forceArrows;
+	public ArrowController veloArrows;
 	public ArrowController goalArrow;
 	/* 0 = main
 	 * 1 = x
@@ -156,9 +156,9 @@ public class BallController : MonoBehaviour {
 
 		//velocity arrow
 		float length = currentVelo.magnitude;
-		veloArrows[0].SetArrowLength (length * arrowLengthModifier);
+		veloArrows.SetArrowLength (length * arrowLengthModifier);
 		Vector3 veloPos = currentVelo * arrowLengthModifier;
-		veloArrows[0].SetTransform (veloPos);
+		veloArrows.SetTransform (veloPos);
 
 		//velocity text
 		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetText (System.Math.Round (length, 2) + " m/s");
@@ -171,6 +171,9 @@ public class BallController : MonoBehaviour {
 			arrowTransform.SetMeshVisible (true);
 		} else {
 			arrowTransform.SetMeshVisible (false);
+			foreach (GhostController ghost in ghosts) {
+				ghost.SetActive (false);
+			}
 		}
 	}
 
@@ -266,13 +269,14 @@ public class BallController : MonoBehaviour {
 	}
 
 	public void TogglePhysicsVision (bool pv) {
-		gravArrow.SetMeshVisible (pv);
-		foreach (ArrowController ac in forceArrows) {
+		//gravArrow.SetMeshVisible (pv);
+		/*foreach (ArrowController ac in forceArrows) {
 			ac.SetMeshVisible (pv);
-		}
-		foreach (ArrowController ac in veloArrows) {
+		}*/
+		veloArrows.SetMeshVisible (pv);
+		/*foreach (ArrowController ac in veloArrows) {
 			ac.SetMeshVisible (pv);
-		}
+		}*/
 		goalArrow.SetMeshVisible (pv);
 
 		for (int i = 2; i < (int) CanvasType.Length; i++) {

@@ -6,22 +6,22 @@ using UnityEngine.UI;
 public enum CanvasType {
 	GAME = 0,
 	AIM_ARROW = 1,
-	GRAV_ARROW = 2,
-	FORCE_ARROW = 3,
-	FORCE_ARROW_X = 4,
-	FORCE_ARROW_Y = 5,
-	FORCE_ARROW_Z = 6,
-	VELO_ARROW = 7,
-	VELO_ARROW_X = 8,
-	VELO_ARROW_Y = 9,
-	VELO_ARROW_Z = 10,
-	DISTANCE = 11,
-	Length = 12
+	//GRAV_ARROW = 2,
+	//FORCE_ARROW = 3, //3
+	//FORCE_ARROW_X = 4,
+	//FORCE_ARROW_Y = 5,
+	//FORCE_ARROW_Z = 6,
+	VELO_ARROW = 2, //7
+	//VELO_ARROW_X = 8,
+	//VELO_ARROW_Y = 9,
+	//VELO_ARROW_Z = 10,
+	DISTANCE = 3, //11
+	Length = 4 //12
 };
 
 [RequireComponent (typeof (Canvas))]
 public class CanvasController : MonoBehaviour {
-
+	public static float GameCanvasOffset = 75.0f;
 	public static CanvasController[] Instances = new CanvasController[(int) CanvasType.Length];
 	public CanvasType type;
 
@@ -45,6 +45,7 @@ public class CanvasController : MonoBehaviour {
 	public int minTextSize, maxTextSize;
 	public float minBoxHeight, maxBoxHeight, minBoxWidth, maxBoxWidth;
 	public float minDist, maxDist;
+
 
 	private void Awake () {
 		if (Instances[(int) type] == null) {
@@ -113,6 +114,10 @@ public class CanvasController : MonoBehaviour {
 			//print ("process " + targetUIPos.x + " " + targetUIPos.y);
 			foreach (RectTransform trans in targetUITrans) {
 				trans.anchoredPosition3D = targetUIPos;
+			}
+			if (type == CanvasType.GAME) {
+				targetUIPos.y += GameCanvasOffset;
+				text.rectTransform.anchoredPosition3D = targetUIPos;
 			}
 		}
 

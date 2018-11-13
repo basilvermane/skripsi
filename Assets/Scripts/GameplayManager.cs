@@ -225,7 +225,7 @@ public class GameplayManager : MonoBehaviour {
 		stageBall.SetPowerMeter (powerControl);
 		stageBall.SetMass (currentLevel.BallMass);
 		CanvasController.Instances[(int) CanvasType.GAME].SetTargetObject (stageBall.transform);
-		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetTargetObject (stageBall.veloArrows[0].transform);
+		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetTargetObject (stageBall.veloArrows.transform);
 		CanvasController.Instances[(int) CanvasType.DISTANCE].SetTargetObject (stageBall.goalArrow.transform);
 		stageGoal = Instantiate (goalPrefab, goalPos, Quaternion.identity).GetComponent<Transform> ();
 
@@ -323,17 +323,12 @@ public class GameplayManager : MonoBehaviour {
 
 		if (Input.GetButtonDown ("Cancel") || Input.GetKeyDown (KeyCode.JoystickButton3)) {
 			if (!FormulaCanvasController.GameInstance.IsShown) {
-				if (shootMode == ShootMode.AIM) ChangeShootMode (ShootMode.IDLE);
-				else if (shootMode == ShootMode.POWER) ChangeShootMode (ShootMode.IDLE);
+				if (shootMode == ShootMode.AIM || shootMode == ShootMode.POWER) {
+					ChangeShootMode (ShootMode.IDLE);
+				}
 			}
 		}
 	}
-
-	/*private void FixedUpdate () {
-		//physics processing
-		if (stageBall != null && stageGoal != null)
-			ballToGoalDist = (stageBall.transform.position - stageGoal.position);
-	}*/
 
 	private void ChangeShootMode (ShootMode mode) {
 		shootMode = mode;
@@ -341,6 +336,7 @@ public class GameplayManager : MonoBehaviour {
 			case ShootMode.IDLE: {
 					powerControl.Deactivate ();
 					CanvasController.Instances[(int) CanvasType.GAME].SetVisible (false);
+					stageBall.ChangeShootMode (ShootMode.IDLE);
 				}
 				break;
 			case ShootMode.AIM:

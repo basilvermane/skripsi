@@ -8,13 +8,11 @@ public class MainMenuController : MonoBehaviour {
 	private int menuSelect;
 	/* 0 = play
 	 * 1 = options
-	 * 2 = credits
-	 * 3 = exit
-	 * 4 = puzzle
-	 * 5 = sandbox
-	 * 6 = inside options
-	 * 7 = inside credits
-	 * 8 = pick level
+	 * 2 = exit
+	 * 3 = puzzle
+	 * 4 = sandbox
+	 * 5 = inside options
+	 * 6 = pick level
 	 */
 	
 	public Text txt;
@@ -41,7 +39,7 @@ public class MainMenuController : MonoBehaviour {
 			return;
 		}
 
-		if (menuSelect != 6) {
+		if (menuSelect != 5) {
 
 			float y = Input.GetAxis ("Verr") + Input.GetAxis ("Vertical");
 
@@ -50,40 +48,32 @@ public class MainMenuController : MonoBehaviour {
 				switch (menuSelect) {
 					case 0: {
 							//start
-							menuSelect = 4;
+							menuSelect = 3;
 						}
 						break;
 					case 1: {
 							//options
 							OptionsManager.Instance.ShowOptions (this);
-							menuSelect = 6;
+							menuSelect = 5;
 						}
 						break;
 					case 2: {
-							//credits
-						}
-						break;
-					case 3: {
 							//exit
 							Application.Quit ();
 						}
 						break;
-					case 4: {
+					case 3: {
 							//puzzle
-							menuSelect = 8;
+							menuSelect = 6;
 							levelAnimController.ShowLevelSelect ();
 						}
 						break;
-					case 5: {
+					case 4: {
 							//sandbox
 							StartCoroutine (LoadingManager.Instance.LoadPuzzle (-1));
 						}
 						break;
-					case 7: {
-							//credits
-						}
-						break;
-					case 8: {
+					case 6: {
 							//select level
 							int level = levelAnimController.GetCurrentLevel ();
 							print ("level " + level);
@@ -97,23 +87,18 @@ public class MainMenuController : MonoBehaviour {
 			if (Input.GetButtonDown ("Jump2") || Input.GetKeyDown (KeyCode.LeftShift)) {
 				switch (menuSelect) {
 					case 0:
-					case 1:
-					case 2: {
-							menuSelect = 3;
-						}
-						break;
-					case 4:
-					case 5: {
-							menuSelect = 0;
-						}
-						break;
-					case 7: {
+					case 1: {
 							menuSelect = 2;
 						}
 						break;
-					case 8: {
+					case 3:
+					case 4: {
+							menuSelect = 0;
+						}
+						break;
+					case 6: {
 							levelAnimController.HideLevelSelect ();
-							menuSelect = 4;
+							menuSelect = 3;
 						}
 						break;
 				}
@@ -124,21 +109,20 @@ public class MainMenuController : MonoBehaviour {
 				if (y > 0.1f) { //atas
 					switch (menuSelect) {
 						case 0: {
-								menuSelect = 3;
+								menuSelect = 2;
 							}
 							break;
 						case 1:
-						case 2:
-						case 3: {
+						case 2: {
 								menuSelect--;
 							}
 							break;
-						case 4: {
-								menuSelect = 5;
+						case 3: {
+								menuSelect = 4;
 							}
 							break;
-						case 5: {
-								menuSelect = 4;
+						case 4: {
+								menuSelect = 3;
 							}
 							break;
 						default: break;
@@ -147,21 +131,20 @@ public class MainMenuController : MonoBehaviour {
 				} else if (y < -0.1f) { //bawah
 					switch (menuSelect) {
 						case 0:
-						case 1:
-						case 2: {
+						case 1: {
 								menuSelect++;
 							}
 							break;
-						case 3: {
+						case 2: {
 								menuSelect = 0;
 							}
 							break;
-						case 4: {
-								menuSelect = 5;
+						case 3: {
+								menuSelect = 4;
 							}
 							break;
-						case 5: {
-								menuSelect = 4;
+						case 4: {
+								menuSelect = 3;
 							}
 							break;
 						default: break;
@@ -169,7 +152,7 @@ public class MainMenuController : MonoBehaviour {
 					inputCooldown = maxInputCooldown;
 				}
 
-				if (menuSelect == 8) {
+				if (menuSelect == 6) {
 					float x = Input.GetAxis ("Horr") + Input.GetAxis ("Horizontal");
 					if (x > 0.1f) { //kanan
 						levelAnimController.ChangeCurrentLevel (true);
@@ -188,7 +171,7 @@ public class MainMenuController : MonoBehaviour {
 		}
 
 		if (backFromOptions) {
-			if (menuSelect == 6) {
+			if (menuSelect == 5) {
 				menuSelect = 1;
 			}
 			backFromOptions = false;
