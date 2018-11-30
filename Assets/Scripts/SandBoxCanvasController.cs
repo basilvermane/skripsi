@@ -339,9 +339,9 @@ public class SandBoxCanvasController : MonoBehaviour {
 	private void PlaceCanvas () {
 		//kalkulasi target di world position
 		//DEBUG-UNCOMMENT
-		float yRot = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;
+		//float yRot = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;
 		//DEBUG-COMMENT
-		//float yRot = player.eulerAngles.y;
+		float yRot = player.eulerAngles.y;
 		Vector3 playerFwd = Quaternion.AngleAxis (yRot, Vector3.up) * Vector3.forward;
 		Vector3 pos = player.position + playerFwd;
 

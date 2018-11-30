@@ -60,9 +60,9 @@ public class CalculationManager : MonoBehaviour {
 	private void Update () {
 		if (isShown) {
 			//DEBUG-UNCOMMENT
-			float yRot = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;
+			//float yRot = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;
 			//DEBUG-COMMENT
-			//float yRot = targetCam.transform.eulerAngles.y;
+			float yRot = targetCam.transform.eulerAngles.y;
 			Vector3 playerFwd = Quaternion.AngleAxis (yRot, Vector3.up) * Vector3.forward;
 			Vector3 pos = targetCam.transform.position + (playerFwd * distanceFromCam);
 

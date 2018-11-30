@@ -48,8 +48,7 @@ public class PerlinNoise : MonoBehaviour {
 		askGenerateNoise = false;
 	}
 
-	// Use this for initialization
-	void Start () {
+	private void Start () {
 		terrain = GetComponent<Terrain> ();
 		terrainData = terrain.terrainData;
 		TerrainWidth = terrainData.heightmapWidth;

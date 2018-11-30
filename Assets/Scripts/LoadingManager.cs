@@ -15,6 +15,7 @@ public class LoadingManager : MonoBehaviour {
 	public bool IsLoading;
 	public GameObject[] loadingWalls, winScreenWalls;
 	public GameObject finishText;
+	public TextMesh scoreText;
 
 	private void Awake () {
 		if (instance == null) {
@@ -32,7 +33,7 @@ public class LoadingManager : MonoBehaviour {
 		IsLoading = true;
 		transform.position = Camera.main.transform.position;
 		SetLoadingWall (true, Camera.main.transform.position, Camera.main.transform.rotation);
-
+		
 		AsyncOperation async = SceneManager.LoadSceneAsync ("main");
 		async.allowSceneActivation = false;
 		//SceneManager.LoadScene ("main");
@@ -50,9 +51,10 @@ public class LoadingManager : MonoBehaviour {
 		yield return null;
 	}
 
-	public IEnumerator WinScreen (float score) {
+	public IEnumerator WinScreen (int score) {
 		IsLoading = true;
 		SetWinWall (true, Camera.main.transform.position, Camera.main.transform.rotation);
+		scoreText.text = "You used " + score + " shots";
 
 		AsyncOperation async = SceneManager.LoadSceneAsync ("menu");
 		async.allowSceneActivation = false;

@@ -83,7 +83,7 @@ public class BallController : MonoBehaviour {
 			float velo = forceMagnitude / GetMass ();
 			float grav = Physics.gravity.magnitude;
 
-			Vector3 force = (arrowTransform.GetDirection () * forceMagnitude);
+			Vector3 force = (arrowTransform.GetDirection () * velo);
 			for (int i = 1; i <= 10; i++) {
 				float t = i * 0.5f;
 
@@ -144,7 +144,6 @@ public class BallController : MonoBehaviour {
 		goalArrow.SetTransform (goalArrowPos);
 
 		CanvasController.Instances[(int) CanvasType.DISTANCE].SetText (System.Math.Round (distance, 2) + " m");
-		//DEBUG-COMMENT
 		//CanvasController.Instances[(int) CanvasType.DISTANCE].SetVisible (true);
 	}
 
@@ -162,7 +161,6 @@ public class BallController : MonoBehaviour {
 
 		//velocity text
 		CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetText (System.Math.Round (length, 2) + " m/s");
-		//DEBUG-COMMENT
 		//CanvasController.Instances[(int) CanvasType.VELO_ARROW].SetVisible (true);
 	}
 
