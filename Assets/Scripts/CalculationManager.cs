@@ -60,9 +60,9 @@ public class CalculationManager : MonoBehaviour {
 	private void Update () {
 		if (isShown) {
 			//DEBUG-UNCOMMENT
-			//float yRot = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;
+			float yRot = InputTracking.GetLocalRotation (XRNode.CenterEye).eulerAngles.y;
 			//DEBUG-COMMENT
-			float yRot = targetCam.transform.eulerAngles.y;
+			//float yRot = targetCam.transform.eulerAngles.y;
 			Vector3 playerFwd = Quaternion.AngleAxis (yRot, Vector3.up) * Vector3.forward;
 			Vector3 pos = targetCam.transform.position + (playerFwd * distanceFromCam);
 
@@ -79,8 +79,8 @@ public class CalculationManager : MonoBehaviour {
 			float impulse = targetBall.GetImpulse ();
 			float angle = targetBall.GetAngle ();
 			float initSpeed = impulse / mass;
-			float verSpeed = Mathf.Asin (Mathf.Deg2Rad * angle) * initSpeed;
-			float horSpeed = Mathf.Acos (Mathf.Deg2Rad * angle) * initSpeed;
+			float verSpeed = Mathf.Sin (Mathf.Deg2Rad * angle) * initSpeed;
+			float horSpeed = Mathf.Cos (Mathf.Deg2Rad * angle) * initSpeed;
 			float horDist = new Vector2 (
 				targetBall.transform.position.x - targetGoal.transform.position.x,
 				targetBall.transform.position.z - targetGoal.transform.position.z)
@@ -100,8 +100,8 @@ public class CalculationManager : MonoBehaviour {
 			initSpeedText.text = System.Math.Round (impulse, 2) + " Ns / " + System.Math.Round (mass, 2) + " kg = "
 				+ System.Math.Round (initSpeed, 2) + " m/s";
 			angleText.text = System.Math.Round (angle, 2) + "°";
-			verSpeedText.text = "arcsin(" + System.Math.Round (angle, 2) + "°) * " + System.Math.Round (initSpeed, 2) + " m/s = " + System.Math.Round (verSpeed, 2) + " m/s";
-			horSpeedText.text = "arccos(" + System.Math.Round (angle, 2) + "°) * " + System.Math.Round (initSpeed, 2) + " m/s = " + System.Math.Round (horSpeed, 2) + " m/s";
+			verSpeedText.text = "sin(" + System.Math.Round (angle, 2) + "°) * " + System.Math.Round (initSpeed, 2) + " m/s = " + System.Math.Round (verSpeed, 2) + " m/s";
+			horSpeedText.text = "cos(" + System.Math.Round (angle, 2) + "°) * " + System.Math.Round (initSpeed, 2) + " m/s = " + System.Math.Round (horSpeed, 2) + " m/s";
 			verDistText.text = System.Math.Round (verDist, 2) + " m";
 			horDistText.text = System.Math.Round (horDist, 2) + " m";
 
@@ -109,7 +109,7 @@ public class CalculationManager : MonoBehaviour {
 				+ "Ball will reach goal horizontally after "
 				+ System.Math.Round (horTime, 2)
 				+ " seconds\n"
-				+ "At the same time, the ball will be "
+				+ "At the same time, ball will be "
 				+ System.Math.Round (Mathf.Abs (verPosDiff), 2)
 				+ " meters " + (verPosDiff >= 0.0f ? "below" : "above") + " the goal";
 		}
